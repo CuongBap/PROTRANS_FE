@@ -241,15 +241,22 @@ function OrderNoPick() {
           cancelText="Hủy"
           onConfirm={() => handleUpdateOrderStatus(id)}
         >
-          <Button
-            title="Xác nhận"
-            type="primary"
-            style={{ background: "green", borderRadius: "8px" }}
+          <button
+            style={{
+              color: "white",
+              backgroundColor: "green",
+              padding: 5,
+              borderRadius: 8,
+              borderWidth: 0,
+              fontSize: 12,
+              textAlign: "center",
+              cursor: "pointer",
+            }}
           >
             <DeliveredProcedureOutlined
               style={{ fontSize: "18px", fontWeight: "bold" }}
             />
-          </Button>
+          </button>
         </Popconfirm>
       ),
     },

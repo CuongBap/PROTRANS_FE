@@ -31,7 +31,6 @@ function History() {
   const [dataSource, setDataSource] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDocumentId, setSelectedDocumentId] = useState(null);
-  const [iframeUrl, setIframeUrl] = useState(null);
   const UserAccount = useSelector((store: RootState) => store.accountmanage);
   const UserAccount2 = useSelector(
     (store: RootState) => store.accountmanage.Id
@@ -327,7 +326,7 @@ function History() {
               <span>: {selectedDocument.numberOfNotarizedCopies}</span>
             </div>
             <div className="details-row">
-              <span>Tài liệu</span>
+              <span>Tệp đính kèm</span>
               <span>
                 :{" "}
                 <a
@@ -373,7 +372,9 @@ function History() {
             </div> */}
           </div>
         ) : (
-          <p>Chọn một tài liệu để xem chi tiết</p>
+          <p style={{ textAlign: "center" }}>
+            Chọn một tài liệu để xem chi tiết
+          </p>
         )}
       </div>
       <Table

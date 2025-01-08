@@ -241,12 +241,20 @@ function OrderNoShip() {
           cancelText="Hủy"
           onConfirm={() => handleUpdateOrderStatus(id)}
         >
-          <Button
-            type="primary"
-            style={{ background: "orange", borderRadius: "8px" }}
+          <button
+            style={{
+              color: "white",
+              backgroundColor: "orange",
+              padding: 5,
+              borderRadius: 8,
+              borderWidth: 0,
+              fontSize: 12,
+              textAlign: "center",
+              cursor: "pointer",
+            }}
           >
-            <SendOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />
-          </Button>
+            <SendOutlined style={{ fontSize: "18px", fontWeight: "bold" }} />
+          </button>
         </Popconfirm>
       ),
     },

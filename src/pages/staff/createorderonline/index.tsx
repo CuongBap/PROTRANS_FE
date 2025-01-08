@@ -140,10 +140,23 @@ function CreateOrderOnline() {
             handleSubmit(id);
           }}
         >
-          <FormOutlined
-            title="Tạo đơn hàng"
-            style={{ fontSize: "18px", color: "orange", fontWeight: "bold" }}
-          />
+          <button
+            style={{
+              color: "white",
+              backgroundColor: "orange",
+              padding: 5,
+              borderRadius: 8,
+              borderWidth: 0,
+              fontSize: 12,
+              textAlign: "center",
+              cursor: "pointer",
+            }}
+          >
+            <FormOutlined
+              title="Tạo đơn hàng"
+              style={{ fontSize: "18px", fontWeight: "bold" }}
+            />
+          </button>
         </Popconfirm>
       ),
     },

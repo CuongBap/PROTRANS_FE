@@ -124,13 +124,14 @@ function Report() {
   return (
     <main className="main-container-report">
       <div className="main-title-report">
-        <h3>THỐNG KÊ</h3>
+        <h3>Thống kê</h3>
       </div>
       <Form>
         <Form.Item>
           <RangePicker
             // showTime={{ format: "HH:mm" }}
             format="YYYY-MM-DD HH:mm"
+            placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
             disabledDate={(current) => {
               const today = moment().endOf("day");
               return (
@@ -180,13 +181,16 @@ function Report() {
 
       <div className="charts">
         <div className="chart-title-report">
-          <h3>Biểu Đồ Doanh Thu Theo Tháng</h3>
+          <h3>Biểu đồ doanh thu theo tháng</h3>
         </div>
         <Form>
           <Form.Item>
             <DatePicker
               picker="year"
               onChange={handleYearChange}
+              disabledDate={(current) => {
+                return current && current > moment().endOf("year");
+              }}
               placeholder="Chọn năm"
             />
           </Form.Item>

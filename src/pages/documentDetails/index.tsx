@@ -40,6 +40,15 @@ function DocumentDetails() {
   //---------------------------------------------------------
   const [loading, setLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   dayjs.extend(isSameOrBefore);
   dayjs.extend(isSameOrAfter);
@@ -146,9 +155,34 @@ function DocumentDetails() {
       render: (urlPath) => {
         // Check if there is a URL to render
         return urlPath ? (
-          <a href={urlPath} target="_blank" rel="noopener noreferrer">
-            <FileTwoTone style={{ fontSize: "16px" }} />
-          </a>
+          <div>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                openModal();
+              }}
+            >
+              <FileTwoTone style={{ fontSize: "16px" }} />
+            </a>
+            <Modal
+              closable={false}
+              visible={isModalVisible}
+              onCancel={closeModal}
+              footer={null}
+              width="80%"
+            >
+              <iframe
+                src={urlPath}
+                style={{
+                  width: "100%",
+                  height: "80vh",
+                  border: "none",
+                }}
+                title="Xem tài liệu"
+              ></iframe>
+            </Modal>
+          </div>
         ) : null;
       },
     },
@@ -450,17 +484,13 @@ function DocumentDetails() {
 
   return (
     <div className="details">
-      {loading ? (
-        "Đang tải..."
-      ) : (
-        <Table
-          columns={columns}
-          dataSource={document}
-          expandable={expandable}
-          rowKey="id"
-          loading={isFetching}
-        ></Table>
-      )}
+      <Table
+        columns={columns}
+        dataSource={document}
+        expandable={expandable}
+        rowKey="id"
+        loading={loading}
+      ></Table>
       <Modal
         open={isOpen}
         title="GIAO VIỆC DỊCH TÀI LIỆU"

@@ -184,7 +184,11 @@ function Report() {
         </div>
         <Form>
           <Form.Item>
-            <DatePicker picker="year" onChange={handleYearChange} />
+            <DatePicker
+              picker="year"
+              onChange={handleYearChange}
+              placeholder="Chọn năm"
+            />
           </Form.Item>
         </Form>
         <div className="charts-report w-full">
@@ -209,13 +213,23 @@ function Report() {
                 }
               />
               <Tooltip
+                formatter={(value) => {
+                  const numericValue =
+                    typeof value === "number" ? value : Number(value);
+                  return new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(numericValue);
+                }}
+              />
+              {/* <Tooltip
                 formatter={(value) =>
                   new Intl.NumberFormat("vi-VN", {
                     style: "currency",
                     currency: "VND",
                   }).format(value)
                 }
-              />
+              /> */}
               <Legend />
               <Bar dataKey="revenue" fill="#8884d8" />
             </BarChart>

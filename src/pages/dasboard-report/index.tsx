@@ -203,7 +203,7 @@ function Report() {
                 top: 5,
                 right: 30,
                 left: 20,
-                bottom: 5,
+                bottom: 50, // Increased margin for rotated labels
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -215,6 +215,12 @@ function Report() {
                     currency: "VND",
                   }).format(value)
                 }
+                tick={{ fontSize: 12, dx: -10 }} // Giảm kích thước chữ và đẩy nhãn sang trái
+                label={{
+                  angle: -90,
+                  position: "insideLeft",
+                  dx: -20,
+                }}
               />
               <Tooltip
                 formatter={(value) => {
@@ -234,8 +240,13 @@ function Report() {
                   }).format(value)
                 }
               /> */}
-              <Legend />
-              <Bar dataKey="revenue" fill="#8884d8" />
+              {/* <Legend /> */}
+              <Legend align="center" verticalAlign="bottom" />
+              <Bar
+                dataKey="revenue"
+                fill="#8884d8"
+                name="Doanh thu theo tháng"
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -247,7 +247,7 @@ const DashboardManager: React.FC = () => {
           </Breadcrumb>
           <div
             style={{
-              padding: 24,
+              padding: 63,
               minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,

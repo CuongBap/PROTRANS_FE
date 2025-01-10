@@ -620,7 +620,7 @@ function MyRequest() {
                         )}
                       </span>
                       <span>
-                        <label>Tệp đính kèm: </label>
+                        <label>Tài liệu gốc: </label>
                         {(() => {
                           const urlPath = formUpdate.getFieldValue([
                             "documents",

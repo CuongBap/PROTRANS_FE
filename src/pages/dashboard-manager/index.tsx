@@ -134,9 +134,9 @@ const DashboardManager: React.FC = () => {
         label: (
           <a
             key={index}
-            href="https://www.antgroup.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            // href="https://www.antgroup.com"
+            // target="_blank"
+            // rel="noopener noreferrer"
             // onClick={() => {
             //   updateStatus(item.id);
             // }}

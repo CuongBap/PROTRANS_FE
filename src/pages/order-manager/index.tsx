@@ -128,11 +128,11 @@ function Order() {
       dataIndex: "phoneNumber",
       key: "phoneNumber",
     },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-    },
+    // {
+    //   title: "Địa chỉ",
+    //   dataIndex: "address",
+    //   key: "address",
+    // },
     {
       title: "Thời hạn",
       dataIndex: "deadline",
@@ -241,7 +241,7 @@ function Order() {
             <button
               style={{
                 color: "white",
-                background: "#479eed",
+                background: "#277dd9",
                 padding: 5,
                 borderRadius: 8,
                 borderWidth: 0,

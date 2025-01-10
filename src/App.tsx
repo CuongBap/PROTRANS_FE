@@ -15,7 +15,7 @@ import Order from "./pages/order-manager";
 import DynamicDocumentsForm from "./pages/documentType";
 import DocumentDetails from "./pages/documentDetails";
 import TranslatorAccount from "./pages/admin/translatorAccount";
-import Translator from "./pages/translatorPage";
+// import Translator from "./pages/translatorPage";
 import History from "./pages/translator-history";
 import AssignShipper from "./pages/assignShipper";
 import AssignNotarization from "./pages/AssignNotarization";
@@ -47,6 +47,7 @@ import ReportManager from "./pages/dasboard-report";
 import PaymentSuccess from "./pages/payments/paySuccess";
 import PaymentFailure from "./pages/payments/paymentFail";
 import Payment from "./pages/payment";
+import Translator from "./pages/translator/translatorPage";
 
 function App() {
   const [connection, setConnection] = useState(null);

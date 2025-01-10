@@ -13,30 +13,22 @@ import {
   UploadProps,
 } from "antd";
 import { useEffect, useState } from "react";
-import api from "../../config/api";
+// import api from "../../config/api";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/rootReducer";
+// import { RootState } from "../../redux/rootReducer";
 import { useForm } from "antd/es/form/Form";
 import {
-  CarryOutOutlined,
-  CheckCircleOutlined,
-  CheckOutlined,
-  CheckSquareOutlined,
   EditOutlined,
   EyeOutlined,
-  EyeTwoTone,
-  FileOutlined,
   FileSyncOutlined,
-  FolderOutlined,
-  FormOutlined,
-  SendOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import "./index.scss";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
-import uploadFileFire from "../../utils/upload";
-import { Value } from "sass";
+import uploadFileFire from "../../../utils/upload";
+import { RootState } from "../../../redux/rootReducer";
+import api from "../../../config/api";
 
 function Translator() {
   const props: UploadProps = {
@@ -44,6 +36,7 @@ function Translator() {
     action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
     headers: {
       authorization: "authorization-text",
+      "Content-Type": "multipart/form-data",
     },
   };
   const [formVariable] = useForm();
@@ -51,6 +44,7 @@ function Translator() {
   const [dataSource, setDataSource] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedDocumentId, setSelectedDocumentId] = useState(null);
+  const [selecteAsgmId, setSelectedAsgmId] = useState(null);
   const UserAccount = useSelector((store: RootState) => store.accountmanage);
   const UserAccount2 = useSelector(
     (store: RootState) => store.accountmanage.Id
@@ -189,6 +183,7 @@ function Translator() {
           title="Bạn có chắc chắn đã hoàn thành việc dịch thuật?"
           onConfirm={() => {
             // handleCompleteDocument(id);
+            setSelectedAsgmId(id);
             setIsOpen(true);
           }}
           okText="Có"
@@ -224,22 +219,70 @@ function Translator() {
     setPagination(newPagination);
   };
 
-  async function handleCompleteDocument() {
-    // try {
-    //   let uploadedUrl = "";
-    //   if (urlPath) {
-    //     uploadedUrl = await uploadFileFire(urlPath);
-    //   }
-    //   console.log(uploadedUrl);
-    //   const response = await api.put(
-    //     `AssignmentTranslation/Complete?id=${id}&urlPath=${uploadedUrl}`
-    //   );
-    //   console.log(response.data.data);
-    //   toast.success("Đã cập nhật thành công.");
-    //   fetchAssignment();
-    // } catch (error) {
-    //   toast.error("Cập nhật thất bại.");
-    // }
+  console.log("Day là Id", selecteAsgmId);
+  // async function handleCompleteDocument(selecteAsgmId, value) {
+  //   console.log("đay lag id", selecteAsgmId);
+  //   if (value.urlPath?.file?.originFileObj) {
+  //     const file = value.urlPath.file.originFileObj;
+  //     const upFile = await uploadFileFire(file);
+  //     value.urlPath = upFile;
+  //     console.log("file", value.urlPath);
+  //   }
+
+  //   // console.log(upFile);
+  //   // try {
+  //   //   const response = await api.put(
+  //   //     `AssignmentTranslation/Complete?id=${id}&urlPath=${uploadedUrl}`
+  //   //   );
+  //   //   console.log(response.data.data);
+  //   //   toast.success("Đã cập nhật thành công.");
+  //   //   fetchAssignment();
+  //   // } catch (error) {
+  //   //   toast.error("Cập nhật thất bại.");
+  //   // }
+  // }
+
+  // async function handleCompleteDocument(selecteAsgmId, values) {
+  //   console.log(values);
+  //   if (values?.urlPath.file?.originFileObj) {
+  //     const originFileObj = values.urlPath.file?.originFileObj;
+  //     const upFile = await uploadFileFire(originFileObj);
+  //     values.urlPath = upFile;
+  //   }
+  // }
+  async function handleCompleteDocument(selecteAsgmId, values) {
+    console.log("Received values:", values);
+
+    // Check if the uploaded file exists
+    if (values?.urlPath?.file?.originFileObj) {
+      try {
+        const originFileObj = values.urlPath.file.originFileObj;
+        console.log("Uploading file:", originFileObj);
+
+        const upFile = await uploadFileFire(originFileObj);
+        console.log("Uploaded file URL:", upFile);
+
+        values.urlPath = upFile;
+
+        console.log("Final values to submit:", values);
+
+        const response = await api.put(
+          `AssignmentTranslation/Complete?assignmentTranslationId=${selecteAsgmId}`,
+          { urlPath: values.urlPath }
+        );
+
+        console.log("API Response:", response);
+        formVariable.resetFields();
+        fetchAssignment();
+        toast.success("Hoàn tất việc dịch thuật");
+      } catch (error) {
+        console.error("Cập nhập file thất bại", error);
+        toast.error("Cập nhập file thất bại.");
+      }
+    } else {
+      console.warn("No file provided for upload.");
+      toast.error("Vui lòng cung cấp file.");
+    }
   }
 
   const fetchAssignment = async () => {
@@ -413,52 +456,17 @@ function Translator() {
           setIsOpen(false);
         }}
         onOk={() => {
-          formVariable.resetFields();
+          formVariable.submit();
           setIsOpen(false);
         }}
         title="Gửi tệp đã dịch"
-        // footer={[
-        //   <Space>
-        //     <Button
-        //       key="cancel"
-        //       onClick={() => {
-        //         formVariable.resetFields();
-        //         setIsOpen(false);
-        //       }}
-        //       style={{
-        //         padding: "5px 15px",
-        //         backgroundColor: "red",
-        //         border: "1px solid #d9d9d9",
-        //         borderRadius: "5px",
-        //         cursor: "pointer",
-        //         color: "white",
-        //       }}
-        //     >
-        //       Hủy
-        //     </Button>
-        //     ,
-        //     <Button
-        //       key="cancel"
-        //       onClick={() => {
-        //         formVariable.submit();
-        //         setIsOpen(false);
-        //       }}
-        //       style={{
-        //         padding: "5px 25px",
-        //         backgroundColor: "Green",
-        //         border: "1px solid #d9d9d9",
-        //         borderRadius: "5px",
-        //         cursor: "pointer",
-        //         color: "white",
-        //       }}
-        //     >
-        //       Gửi
-        //     </Button>
-        //     ,
-        //   </Space>,
-        // ]}
       >
-        <Form form={formVariable} onFinish={() => handleCompleteDocument()}>
+        <Form
+          form={formVariable}
+          onFinish={(values) => {
+            handleCompleteDocument(selecteAsgmId, values);
+          }}
+        >
           <Form.Item
             label="Tệp"
             name={"urlPath"}

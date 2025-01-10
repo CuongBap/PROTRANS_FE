@@ -136,21 +136,22 @@ function Header() {
   ];
 
   async function handleReadNotification(id) {
+    const notification = listNoti.find((item) => item.id === id);
+    if (notification?.isChecked) {
+      toast.info("Thông báo này đã được đọc.");
+      return;
+    }
     try {
       const response = await api.put(`Notification/${id}`);
 
       if (response?.status === 200) {
-        // Tìm và cập nhật trạng thái thông báo trong danh sách hiện tại
         const updatedList = listNoti.map((item) =>
           item.id === id ? { ...item, isChecked: true } : item
         );
         setListNoti(updatedList);
 
-        // Hiển thị thông báo thành công
         toast.success("Đã đọc thông báo");
       }
-
-      // toast.success("Đã đọc thông báo");
     } catch (error) {
       console.error("Cập nhập file thất bại", error);
       toast.error("Đọc thông báo thất bại");

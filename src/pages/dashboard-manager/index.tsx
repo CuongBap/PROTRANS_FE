@@ -162,6 +162,11 @@ const DashboardManager: React.FC = () => {
   }, [listNoti]);
 
   async function handleReadNotification(id) {
+    const notification = listNoti.find((item) => item.id === id);
+    if (notification?.isChecked) {
+      toast.info("Thông báo này đã được đọc.");
+      return; // Dừng lại nếu thông báo đã được đọc
+    }
     try {
       const response = await api.put(`Notification/${id}`);
 

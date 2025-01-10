@@ -27,7 +27,10 @@ import {
   CopyOutlined,
   EyeTwoTone,
   FieldTimeOutlined,
+  FileDoneOutlined,
+  FileOutlined,
   FormOutlined,
+  ForwardOutlined,
   InfoCircleFilled,
   InfoCircleOutlined,
   LikeOutlined,
@@ -536,7 +539,7 @@ function HistoryOrder() {
                         })()}
                       </span>
                       <span>
-                        <label>Tệp đính kèm: </label>
+                        <label>Tài liệu gốc: </label>
                         {(() => {
                           const urlPath = formUpdate.getFieldValue([
                             "documents",
@@ -549,11 +552,38 @@ function HistoryOrder() {
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              <CopyOutlined />
+                              <CopyOutlined style={{ fontSize: "16px" }} />
                             </a>
                           ) : null;
                         })()}
                       </span>
+                      {(() => {
+                        const translatedUrlPath = formUpdate.getFieldValue([
+                          "documents",
+                          name,
+                          "translatedUrlPath",
+                        ]);
+
+                        return translatedUrlPath ? (
+                          <>
+                            <span>
+                              <ForwardOutlined />
+                            </span>
+                            <span>
+                              <label>Tài liệu đã dịch: </label>
+                              <a
+                                href={translatedUrlPath}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <CopyOutlined
+                                  style={{ fontSize: "16px", color: "orange" }}
+                                />
+                              </a>
+                            </span>
+                          </>
+                        ) : null;
+                      })()}
                     </div>
                     <div className="document-content">
                       <span>

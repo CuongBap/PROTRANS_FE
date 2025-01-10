@@ -122,7 +122,7 @@ const DashboardManager: React.FC = () => {
 
   useEffect(() => {
     if (Array.isArray(listNoti) && listNoti.length > 0) {
-      const count = listNoti.filter((item) => item.id).length;
+      const count = listNoti.filter((item) => !item.isChecked).length;
 
       setCountNoti(count);
     }
@@ -137,11 +137,11 @@ const DashboardManager: React.FC = () => {
             // href="https://www.antgroup.com"
             // target="_blank"
             // rel="noopener noreferrer"
-            // onClick={() => {
-            //   updateStatus(item.id);
-            // }}
+            onClick={() => {
+              handleReadNotification(item.id);
+            }}
           >
-            {item.message}
+            {item.message} - {item.isChecked ? "Đã đọc" : "Chưa đọc"}
           </a>
         ),
         key: item.id.toString(),
@@ -160,6 +160,28 @@ const DashboardManager: React.FC = () => {
       ];
     }
   }, [listNoti]);
+
+  async function handleReadNotification(id) {
+    try {
+      const response = await api.put(`Notification/${id}`);
+
+      if (response?.status === 200) {
+        // Tìm và cập nhật trạng thái thông báo trong danh sách hiện tại
+        const updatedList = listNoti.map((item) =>
+          item.id === id ? { ...item, isChecked: true } : item
+        );
+        setListNoti(updatedList);
+
+        // Hiển thị thông báo thành công
+        toast.success("Đã đọc thông báo");
+      }
+
+      // toast.success("Đã đọc thông báo");
+    } catch (error) {
+      console.error("Cập nhập file thất bại", error);
+      toast.error("Đọc thông báo thất bại");
+    }
+  }
 
   const menuProps = {
     items: items1,

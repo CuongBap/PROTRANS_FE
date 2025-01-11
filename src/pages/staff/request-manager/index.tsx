@@ -59,6 +59,34 @@ function RequestManager() {
     setIsModalVisible(false);
   };
 
+  const getIframeSrc = (urlPath) => {
+    if (!urlPath || typeof urlPath !== "string") {
+      return "";
+    }
+
+    const hasExtension = urlPath.includes(".");
+    if (!hasExtension) {
+      console.warn("URL không xác định định dạng.");
+      return "";
+    }
+
+    const extension = urlPath.split(".").pop().split("?")[0].toLowerCase();
+
+    switch (extension) {
+      case "pdf":
+        return urlPath;
+      case "docx":
+      case "xlsx":
+      case "pptx":
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+          urlPath
+        )}`;
+      default:
+        console.warn(`Định dạng không được hỗ trợ: ${extension}`);
+        return "";
+    }
+  };
+
   const handleStatusFilter = (status: string) => {
     setStatusFilter(status);
     setActiveButton(status);
@@ -630,11 +658,13 @@ function RequestManager() {
                             width="80%"
                           >
                             <iframe
-                              src={formUpdate.getFieldValue([
-                                "documents",
-                                name,
-                                "urlPath",
-                              ])}
+                              src={getIframeSrc(
+                                formUpdate.getFieldValue([
+                                  "documents",
+                                  name,
+                                  "urlPath",
+                                ])
+                              )}
                               style={{
                                 width: "100%",
                                 height: "80vh",

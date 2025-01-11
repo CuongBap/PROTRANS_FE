@@ -60,6 +60,15 @@ function HistoryOrder() {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackValue, setFeedbackValue] = useState("");
   const [selectedOrderId, setSelectedOrderId] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   // Lấy thông tin các agency
   const fetchAgency = async () => {
@@ -548,14 +557,37 @@ function HistoryOrder() {
                           ]);
                           return urlPath ? (
                             <a
-                              href={urlPath}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                openModal();
+                              }}
                             >
                               <CopyOutlined style={{ fontSize: "16px" }} />
                             </a>
                           ) : null;
                         })()}
+                        <Modal
+                          closable={false}
+                          visible={isModalVisible}
+                          onCancel={closeModal}
+                          footer={null}
+                          width="80%"
+                        >
+                          <iframe
+                            src={formUpdate.getFieldValue([
+                              "documents",
+                              name,
+                              "urlPath",
+                            ])}
+                            style={{
+                              width: "100%",
+                              height: "80vh",
+                              border: "none",
+                            }}
+                            title="Xem tài liệu"
+                          ></iframe>
+                        </Modal>
                       </span>
                       {(() => {
                         const translatedUrlPath = formUpdate.getFieldValue([
@@ -572,15 +604,38 @@ function HistoryOrder() {
                             <span>
                               <label>Tài liệu đã dịch: </label>
                               <a
-                                href={translatedUrlPath}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openModal();
+                                }}
                               >
                                 <CopyOutlined
                                   style={{ fontSize: "16px", color: "orange" }}
                                 />
                               </a>
                             </span>
+                            <Modal
+                              closable={false}
+                              visible={isModalVisible}
+                              onCancel={closeModal}
+                              footer={null}
+                              width="80%"
+                            >
+                              <iframe
+                                src={formUpdate.getFieldValue([
+                                  "documents",
+                                  name,
+                                  "translatedUrlPath",
+                                ])}
+                                style={{
+                                  width: "100%",
+                                  height: "80vh",
+                                  border: "none",
+                                }}
+                                title="Xem tài liệu"
+                              ></iframe>
+                            </Modal>
                           </>
                         ) : null;
                       })()}

@@ -52,6 +52,15 @@ function MyRequest() {
   const [language, setLanguage] = useState([]);
   const [documentType, setDocumentType] = useState([]);
   const [notarizationType, setNotarizationType] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   const nameMapping = {
     PageNumber: "Số trang",
@@ -629,14 +638,37 @@ function MyRequest() {
                           ]);
                           return urlPath ? (
                             <a
-                              href={urlPath}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                openModal();
+                              }}
                             >
                               <CopyOutlined />
                             </a>
                           ) : null;
                         })()}
+                        <Modal
+                          closable={false}
+                          visible={isModalVisible}
+                          onCancel={closeModal}
+                          footer={null}
+                          width="80%"
+                        >
+                          <iframe
+                            src={formUpdate.getFieldValue([
+                              "documents",
+                              name,
+                              "urlPath",
+                            ])}
+                            style={{
+                              width: "100%",
+                              height: "80vh",
+                              border: "none",
+                            }}
+                            title="Xem tài liệu"
+                          ></iframe>
+                        </Modal>
                       </span>
                     </div>
                     <div className="document-content-bottom">

@@ -1,4 +1,4 @@
-import { Popconfirm, Spin, Table } from "antd";
+import { Input, Popconfirm, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../../../config/api";
@@ -9,6 +9,7 @@ function ShipperAcccount() {
   const [role, setRole] = useState([]);
   const [agency, setAgency] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [allShipper, setAllShipper] = useState([]);
 
   const fetchAgency = async () => {
     const response = await api.get("Agency");
@@ -52,11 +53,16 @@ function ShipperAcccount() {
   };
 
   const columns = [
-    // {
-    //   title: "Tên người dùng",
-    //   dataIndex: "userName", // Use firstLanguageId from QuotePrice data
-    //   key: "userName",
-    // },
+    {
+      title: "STT",
+      dataIndex: "stt",
+      key: "stt",
+      render: (_, __, index) => {
+        const currentPage = pagination.current || 1;
+        const pageSize = pagination.pageSize || 10;
+        return (currentPage - 1) * pageSize + index + 1;
+      },
+    },
     {
       title: "Họ và tên",
       dataIndex: "fullName", // Use secondLanguageId from QuotePrice data
@@ -174,11 +180,27 @@ function ShipperAcccount() {
     },
   ];
 
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
+  const handleTableChange = (newPagination) => {
+    setPagination(newPagination);
+  };
+  const handleSearch = (value) => {
+    const filtered = allShipper.filter((translator) =>
+      translator.fullName.toLowerCase().includes(value.toLowerCase())
+    );
+    setDataSource(filtered);
+    setPagination((prev) => ({ ...prev, current: 1 }));
+  };
+
   async function fetchShipperAccount() {
     setLoading(true);
     try {
       const response = await api.get("Account/GetAllShipper");
       setDataSource(response.data.data);
+      setAllShipper(response.data.data);
       setLoading(false);
     } catch (error) {
       toast.error("Danh sách trống.");
@@ -192,14 +214,25 @@ function ShipperAcccount() {
     fetchRole();
   }, []);
   return (
-    <Table
-      columns={columns}
-      dataSource={dataSource}
-      loading={{
-        spinning: loading,
-        indicator: <Spin />,
-      }}
-    ></Table>
+    <div className="manageshipper">
+      <div className="searchstaff">
+        <Input.Search
+          placeholder="Tìm kiếm theo tên"
+          allowClear
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: 10, width: 300 }}
+        />
+      </div>
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        loading={{
+          spinning: loading,
+          indicator: <Spin />,
+        }}
+        onChange={handleTableChange}
+      ></Table>
+    </div>
   );
 }
 

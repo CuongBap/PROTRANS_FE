@@ -48,6 +48,7 @@ import PaymentSuccess from "./pages/payments/paySuccess";
 import PaymentFailure from "./pages/payments/paymentFail";
 import Payment from "./pages/payment";
 import Translator from "./pages/translator/translatorPage";
+import ManageTranslatorSkill from "./pages/translator/TranslatorSkill";
 
 function App() {
   const [connection, setConnection] = useState(null);
@@ -334,6 +335,10 @@ function App() {
         {
           path: "history",
           element: <History />,
+        },
+        {
+          path: "translatorskill",
+          element: <ManageTranslatorSkill />,
         },
       ],
     },

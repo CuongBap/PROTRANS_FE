@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowRightOutlined,
   BellOutlined,
+  ContainerOutlined,
   HistoryOutlined,
   TranslationOutlined,
   UserOutlined,
@@ -37,6 +38,7 @@ function getItem(
 const items: MenuItem[] = [
   getItem("Tài liệu đang dịch", "assignment", <TranslationOutlined />),
   getItem("Lịch sử", "history", <HistoryOutlined />),
+  getItem("Bằng cấp của bạn", "translatorskill", <ContainerOutlined />),
 ];
 
 const DashboardTranslator: React.FC = () => {

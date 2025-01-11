@@ -52,6 +52,7 @@ function TranslatorAccount() {
   const [isOpenskill, setIsOpenSkill] = useState(false);
   const [role, setRole] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [allTranslator, setAllTranslator] = useState([]);
   const [currentTranslatorSkills, setCurrentTranslatorSkills] = useState([]);
 
   const fetchAgency = async () => {
@@ -117,6 +118,16 @@ function TranslatorAccount() {
   };
 
   const columns = [
+    {
+      title: "STT",
+      dataIndex: "stt",
+      key: "stt",
+      render: (_, __, index) => {
+        const currentPage = pagination.current || 1;
+        const pageSize = pagination.pageSize || 10;
+        return (currentPage - 1) * pageSize + index + 1;
+      },
+    },
     {
       title: "Họ và tên",
       dataIndex: "fullName",
@@ -226,6 +237,20 @@ function TranslatorAccount() {
       ),
     },
   ];
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
+  const handleTableChange = (newPagination) => {
+    setPagination(newPagination);
+  };
+  const handleSearch = (value) => {
+    const filtered = allTranslator.filter((translator) =>
+      translator.fullName.toLowerCase().includes(value.toLowerCase())
+    );
+    setDataSource(filtered);
+    setPagination((prev) => ({ ...prev, current: 1 }));
+  };
 
   async function handleSubmit(values) {
     console.log(values);
@@ -256,6 +281,7 @@ function TranslatorAccount() {
     try {
       const response = await api.get("Account/GetAllTranslator");
       setDataSource(response.data.data);
+      setAllTranslator(response.data.data);
       setLoading(false);
     } catch (error) {
       toast.error("Danh sách trống.");
@@ -270,19 +296,28 @@ function TranslatorAccount() {
 
   return (
     <div className="translator">
-      <Button
-        className="button-add"
-        type="primary"
-        onClick={() => {
-          formVariable.setFieldsValue({
-            skills: [{}],
-          });
-          setIsOpen(true);
-        }}
-      >
-        <PlusOutlined />
-        Tạo tài khoản mới
-      </Button>
+      <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+        <Button
+          className="button-add"
+          type="primary"
+          onClick={() => {
+            formVariable.setFieldsValue({
+              skills: [{}],
+            });
+            setIsOpen(true);
+          }}
+        >
+          <PlusOutlined />
+          Tạo tài khoản mới
+        </Button>
+        <Input.Search
+          placeholder="Tìm kiếm theo tên"
+          allowClear
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: 10, width: 300 }}
+        />
+      </div>
+
       <Table
         columns={columns}
         dataSource={dataSource}
@@ -290,6 +325,7 @@ function TranslatorAccount() {
           spinning: loading,
           indicator: <Spin />,
         }}
+        onChange={handleTableChange}
       ></Table>
       <Modal
         open={isOpen}

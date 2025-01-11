@@ -5,6 +5,7 @@ import {
   Modal,
   Popconfirm,
   Space,
+  Spin,
   Switch,
   Table,
   Tooltip,
@@ -24,6 +25,7 @@ import { toast } from "react-toastify";
 
 function Language() {
   const [formVariable] = useForm();
+  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [allLanguages, setAllLanguages] = useState([]);
@@ -119,11 +121,18 @@ function Language() {
   };
 
   async function fetchLanguage() {
-    console.log("token", token);
-    const response = await api.get("Language");
-    console.log(response.data.data);
-    setDataSource(response.data.data);
-    setAllLanguages(response.data.data);
+    setLoading(true);
+    try {
+      console.log("token", token);
+      const response = await api.get("Language");
+      console.log(response.data.data);
+      setDataSource(response.data.data);
+      setAllLanguages(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      toast.error("Danh sách trống.");
+      setLoading(false);
+    }
   }
 
   async function handleSubmit(values) {
@@ -181,6 +190,10 @@ function Language() {
         style={{ width: "1200px" }}
         columns={columns}
         dataSource={dataSource}
+        loading={{
+          spinning: loading,
+          indicator: <Spin />,
+        }}
         pagination={pagination}
         onChange={handleTableChange}
       ></Table>

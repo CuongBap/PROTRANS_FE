@@ -7,6 +7,7 @@ import {
   Popconfirm,
   Select,
   Space,
+  Spin,
   Table,
   Tooltip,
 } from "antd";
@@ -29,6 +30,7 @@ function QuotePrice() {
   const [isOpenUpdate, setIsOpenUpdate] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [language, setLanguage] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchLanguages = async () => {
     const response = await api.get(`Language`);
@@ -210,10 +212,17 @@ function QuotePrice() {
   };
 
   async function fetchQuotePrice() {
-    const response = await api.get("QuotePrice");
-    console.log("=============================");
-    console.log(response.data.data);
-    setDataSource(response.data.data);
+    setLoading(true);
+    try {
+      const response = await api.get("QuotePrice");
+      console.log("=============================");
+      console.log(response.data.data);
+      setDataSource(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      toast.error("Danh sách trống.");
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -271,6 +280,10 @@ function QuotePrice() {
       <Table
         columns={columns}
         dataSource={dataSource}
+        loading={{
+          spinning: loading,
+          indicator: <Spin />,
+        }}
         pagination={pagination}
         onChange={handleTableChange}
       ></Table>

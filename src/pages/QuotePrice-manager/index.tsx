@@ -31,6 +31,7 @@ function QuotePrice() {
   const [dataSource, setDataSource] = useState([]);
   const [language, setLanguage] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [allQuotePrice, setAllQuotePrice] = useState([]);
 
   const fetchLanguages = async () => {
     const response = await api.get(`Language`);
@@ -211,6 +212,22 @@ function QuotePrice() {
     setPagination(newPagination);
   };
 
+  const handleFilterByLanguage = (selectedLanguageId) => {
+    if (!selectedLanguageId) {
+      // If no language is selected, show all data
+      setDataSource(allQuotePrice);
+    } else {
+      // Filter based on either firstLanguageId or secondLanguageId
+      const filtered = allQuotePrice.filter(
+        (item) =>
+          item.firstLanguageId === selectedLanguageId ||
+          item.secondLanguageId === selectedLanguageId
+      );
+      setDataSource(filtered);
+      setPagination((prev) => ({ ...prev, current: 1 }));
+    }
+  };
+
   async function fetchQuotePrice() {
     setLoading(true);
     try {
@@ -218,6 +235,7 @@ function QuotePrice() {
       console.log("=============================");
       console.log(response.data.data);
       setDataSource(response.data.data);
+      setAllQuotePrice(response.data.data);
       setLoading(false);
     } catch (error) {
       toast.error("Danh sách trống.");
@@ -266,17 +284,34 @@ function QuotePrice() {
 
   return (
     <div className="quotePricePage">
-      <Button
-        type="primary"
-        onClick={() => {
-          formVariable.resetFields();
-          setIsOpen(true);
+      <div
+        className="quoteprice-infor"
+        style={{
+          display: "flex",
+          gap: "20px",
+          alignItems: "center",
+          marginBottom: "10px",
         }}
-        style={{ marginBottom: "10px" }}
       >
-        <PlusOutlined />
-        Tạo báo giá mới
-      </Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            formVariable.resetFields();
+            setIsOpen(true);
+          }}
+        >
+          <PlusOutlined />
+          Tạo báo giá mới
+        </Button>
+        <Select
+          placeholder="Lọc theo ngôn ngữ"
+          options={language}
+          style={{ width: 200 }}
+          onChange={handleFilterByLanguage}
+          allowClear
+        />
+      </div>
+
       <Table
         columns={columns}
         dataSource={dataSource}

@@ -18,7 +18,7 @@ import {
 import { FaSackDollar } from "react-icons/fa6";
 import "./index.css";
 import { TruckOutlined } from "@ant-design/icons";
-import { DatePicker, Form } from "antd";
+import { DatePicker, Form, Spin } from "antd";
 import api from "../../config/api";
 import { useState } from "react";
 import moment from "moment";
@@ -37,8 +37,10 @@ function Report() {
   });
   const [chartData, setChartData] = useState([]);
   const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState(false);
 
   const handleDateChange = async (value, dateString) => {
+    setLoading(true);
     if (value && dateString.length === 2) {
       const [fromTime, toTime] = value.map(
         (date) => date.toISOString() // Format ngày trước khi truyền vào API
@@ -58,6 +60,7 @@ function Report() {
 
         console.log("API Response:", response.data.data);
         setData(response.data.data);
+        setLoading(false);
       } catch (error) {
         // Log detailed error for debugging
         if (error.response) {
@@ -66,12 +69,14 @@ function Report() {
         } else {
           console.error("Unexpected Error:", error.message);
         }
+        setLoading(false);
       }
     }
   };
 
   const handleYearChange = async (date, dateString) => {
     if (dateString) {
+      setLoading(true);
       try {
         const response = await api.get(`/Dashboard/MonthlyRevenueByYear`, {
           params: {
@@ -90,6 +95,8 @@ function Report() {
         setChartData(formattedData);
       } catch (error) {
         console.error("Error fetching chart data:", error);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -122,117 +129,117 @@ function Report() {
   // const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   return (
-    <main className="main-container-report">
-      <div className="main-title-report">
-        <h3>Thống kê</h3>
-      </div>
-      <Form>
-        <Form.Item>
-          <RangePicker
-            // showTime={{ format: "HH:mm" }}
-            format="YYYY-MM-DD HH:mm"
-            placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
-            disabledDate={(current) => {
-              const today = moment().endOf("day");
-              return (
-                // Không cho phép chọn ngày tương lai
-                current && current > today
-              );
-            }}
-            onChange={handleDateChange}
-          />
-        </Form.Item>
-      </Form>
-      <div className="main-cards-report">
-        <div className="card-report">
-          <div className="card-inner-report">
-            <BsFillArchiveFill className="card_icon-report" />
-            <h3>Số lượng yêu cầu</h3>
-            <h1>{data.numberOfRequests ?? 0}</h1>
-          </div>
-        </div>
-        <div className="card-report">
-          <div className="card-inner-report">
-            <BsFillGrid3X3GapFill className="card_icon-report" />
-            <h3>Số lượng đơn hàng</h3>
-            <h1>{data.numberOfOrders ?? 0}</h1>
-          </div>
-        </div>
-        <div className="card-report">
-          <div className="card-inner-report">
-            <BsPeopleFill className="card_icon-report" />
-            <h3>Số lượng người dùng</h3>
-            <h1>{data.numberOfAccounts ?? 0}</h1>
-          </div>
-        </div>
-        <div className="card-report">
-          <div className="card-inner-report">
-            <TruckOutlined className="card_icon-report" />
-            <h3>Tổng doanh thu</h3>
-            <h1>
-              {new Intl.NumberFormat("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }).format(data.revenue ?? 0)}
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      <div className="charts">
-        <div className="chart-title-report">
-          <h3>Biểu đồ doanh thu theo tháng</h3>
+    <Spin spinning={loading} tip="Loading...">
+      <main className="main-container-report">
+        <div className="main-title-report">
+          <h3>Thống kê</h3>
         </div>
         <Form>
           <Form.Item>
-            <DatePicker
-              picker="year"
-              onChange={handleYearChange}
+            <RangePicker
+              // showTime={{ format: "HH:mm" }}
+              format="YYYY-MM-DD HH:mm"
+              placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
               disabledDate={(current) => {
-                return current && current > moment().endOf("year");
+                const today = moment().endOf("day");
+                return (
+                  // Không cho phép chọn ngày tương lai
+                  current && current > today
+                );
               }}
-              placeholder="Chọn năm"
+              onChange={handleDateChange}
             />
           </Form.Item>
         </Form>
-        <div className="charts-report w-full">
-          <ResponsiveContainer width="100%" height={400} className="mx-auto">
-            <BarChart
-              data={chartData}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 50, // Increased margin for rotated labels
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis
-                tickFormatter={(value) =>
-                  new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(value)
-                }
-                tick={{ fontSize: 12, dx: -10 }} // Giảm kích thước chữ và đẩy nhãn sang trái
-                label={{
-                  angle: -90,
-                  position: "insideLeft",
-                  dx: -20,
+        <div className="main-cards-report">
+          <div className="card-report">
+            <div className="card-inner-report">
+              <BsFillArchiveFill className="card_icon-report" />
+              <h3>Số lượng yêu cầu</h3>
+              <h1>{data.numberOfRequests ?? 0}</h1>
+            </div>
+          </div>
+          <div className="card-report">
+            <div className="card-inner-report">
+              <BsFillGrid3X3GapFill className="card_icon-report" />
+              <h3>Số lượng đơn hàng</h3>
+              <h1>{data.numberOfOrders ?? 0}</h1>
+            </div>
+          </div>
+          <div className="card-report">
+            <div className="card-inner-report">
+              <BsPeopleFill className="card_icon-report" />
+              <h3>Số lượng người dùng</h3>
+              <h1>{data.numberOfAccounts ?? 0}</h1>
+            </div>
+          </div>
+          <div className="card-report">
+            <div className="card-inner-report">
+              <TruckOutlined className="card_icon-report" />
+              <h3>Tổng doanh thu</h3>
+              <h1>
+                {new Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(data.revenue ?? 0)}
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div className="charts">
+          <div className="chart-title-report">
+            <h3>Biểu đồ doanh thu theo tháng</h3>
+          </div>
+          <Form>
+            <Form.Item>
+              <DatePicker
+                picker="year"
+                onChange={handleYearChange}
+                disabledDate={(current) => {
+                  return current && current > moment().endOf("year");
                 }}
+                placeholder="Chọn năm"
               />
-              <Tooltip
-                formatter={(value) => {
-                  const numericValue =
-                    typeof value === "number" ? value : Number(value);
-                  return new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(numericValue);
+            </Form.Item>
+          </Form>
+          <div className="charts-report w-full">
+            <ResponsiveContainer width="100%" height={400} className="mx-auto">
+              <BarChart
+                data={chartData}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 50, // Increased margin for rotated labels
                 }}
-              />
-              {/* <Tooltip
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis
+                  tickFormatter={(value) =>
+                    new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(value)
+                  }
+                  tick={{ fontSize: 12, dx: -10 }} // Giảm kích thước chữ và đẩy nhãn sang trái
+                  label={{
+                    angle: -90,
+                    position: "insideLeft",
+                    dx: -20,
+                  }}
+                />
+                <Tooltip
+                  formatter={(value) => {
+                    const numericValue =
+                      typeof value === "number" ? value : Number(value);
+                    return new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(numericValue);
+                  }}
+                />
+                {/* <Tooltip
                 formatter={(value) =>
                   new Intl.NumberFormat("vi-VN", {
                     style: "currency",
@@ -240,18 +247,18 @@ function Report() {
                   }).format(value)
                 }
               /> */}
-              {/* <Legend /> */}
-              <Legend align="center" verticalAlign="bottom" />
-              <Bar
-                dataKey="revenue"
-                fill="#8884d8"
-                name="Doanh thu theo tháng"
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+                {/* <Legend /> */}
+                <Legend align="center" verticalAlign="bottom" />
+                <Bar
+                  dataKey="revenue"
+                  fill="#8884d8"
+                  name="Doanh thu theo tháng"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-        {/* <div className="chart-report-number">
+          {/* <div className="chart-report-number">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               width={500}
@@ -278,8 +285,9 @@ function Report() {
             </LineChart>
           </ResponsiveContainer>
         </div> */}
-      </div>
-    </main>
+        </div>
+      </main>
+    </Spin>
   );
 }
 

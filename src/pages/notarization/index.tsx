@@ -28,6 +28,8 @@ function Notarization() {
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [allnotarization, setAllNotarization] = useState([]);
+
   const columns = [
     {
       title: "STT",
@@ -135,12 +137,21 @@ function Notarization() {
     setPagination(newPagination);
   };
 
+  const handleSearch = (value) => {
+    const filtered = allnotarization.filter((translator) =>
+      translator.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setDataSource(filtered);
+    setPagination((prev) => ({ ...prev, current: 1 }));
+  };
+
   async function fetchNotarization() {
     setLoading(true);
     try {
       const response = await api.get("Notarization");
       console.log(response.data.data);
       setDataSource(response.data.data);
+      setAllNotarization(response.data.data);
       setLoading(false);
     } catch (error) {
       toast.error("Danh sách trống.");
@@ -160,20 +171,6 @@ function Notarization() {
       setLoading(false);
     }
   }
-
-  // async function handleEditLanguage(value) {
-  //   const updateCategory = formUpdate.getFieldsValue();
-  //   console.log(updateCategory);
-  //   api
-  //     .put(`Language/${value.id}`, {
-  //       name: value.name,
-  //     })
-  //     .then(() => {
-  //       fetchLanguage();
-  //       setVisibleEditModal(false);
-  //     });
-  //   console.log("cuong");
-  // }
 
   const handleDeleteLanguage = async (id) => {
     console.log(id);
@@ -205,17 +202,28 @@ function Notarization() {
 
   return (
     <div className="languagePage">
-      <Button
-        type="primary"
-        onClick={() => {
-          formVariable.resetFields();
-          setIsOpen(true);
-        }}
-        style={{ marginBottom: "10px" }}
+      <div
+        className="notarization_infor"
+        style={{ display: "flex", gap: "20px", alignItems: "center" }}
       >
-        <PlusOutlined />
-        Thêm loại công chứng mới
-      </Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            formVariable.resetFields();
+            setIsOpen(true);
+          }}
+          style={{ marginBottom: "10px" }}
+        >
+          <PlusOutlined />
+          Thêm loại công chứng mới
+        </Button>
+        <Input.Search
+          placeholder="Tìm kiếm theo tên"
+          allowClear
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: 10, width: 300 }}
+        />
+      </div>
       <Table
         columns={columns}
         dataSource={dataSource}

@@ -49,6 +49,7 @@ import PaymentFailure from "./pages/payments/paymentFail";
 import Payment from "./pages/payment";
 import Translator from "./pages/translator/translatorPage";
 import ManageTranslatorSkill from "./pages/translator/TranslatorSkill";
+import Transaction from "./pages/transaction";
 
 function App() {
   const [connection, setConnection] = useState(null);
@@ -237,6 +238,10 @@ function App() {
         {
           path: "reportmanager",
           element: <ReportManager />,
+        },
+        {
+          path: "transaction",
+          element: <Transaction />,
         },
       ],
     },

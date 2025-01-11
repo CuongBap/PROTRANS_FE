@@ -5,6 +5,7 @@ import {
   Modal,
   Popconfirm,
   Space,
+  Spin,
   Table,
   Tooltip,
 } from "antd";
@@ -18,6 +19,7 @@ import {
   PlusOutlined,
   StopOutlined,
 } from "@ant-design/icons";
+import { toast } from "react-toastify";
 
 function Notarization() {
   const [formVariable] = useForm();
@@ -25,6 +27,7 @@ function Notarization() {
   const [isOpen, setIsOpen] = useState(false);
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [loading, setLoading] = useState(false);
   const columns = [
     {
       title: "STT",
@@ -133,18 +136,29 @@ function Notarization() {
   };
 
   async function fetchNotarization() {
-    const response = await api.get("Notarization");
-    console.log(response.data.data);
-    setDataSource(response.data.data);
+    setLoading(true);
+    try {
+      const response = await api.get("Notarization");
+      console.log(response.data.data);
+      setDataSource(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      toast.error("Danh sách trống.");
+      setLoading(false);
+    }
   }
 
   async function handleSubmit(values) {
     console.log(values);
-
-    const response = await api.post("Notarization", values);
-    setDataSource([...dataSource, values]);
-    formVariable.resetFields();
-    handleHideModal();
+    try {
+      const response = await api.post("Notarization", values);
+      setDataSource([...dataSource, values]);
+      formVariable.resetFields();
+      handleHideModal();
+    } catch (error) {
+      toast.error("Thêm mới loại công chứng thất bại.");
+      setLoading(false);
+    }
   }
 
   // async function handleEditLanguage(value) {
@@ -205,6 +219,10 @@ function Notarization() {
       <Table
         columns={columns}
         dataSource={dataSource}
+        loading={{
+          spinning: loading,
+          indicator: <Spin />,
+        }}
         pagination={pagination}
         onChange={handleTableChange}
       ></Table>

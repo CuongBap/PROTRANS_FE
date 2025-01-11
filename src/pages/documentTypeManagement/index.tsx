@@ -6,6 +6,7 @@ import {
   Modal,
   Popconfirm,
   Space,
+  Spin,
   Switch,
   Table,
   Tooltip,
@@ -29,6 +30,7 @@ function DocumentType() {
   const [dataSource, setDataSource] = useState([]);
   const [allDocumentTypes, setAllDocumentTypes] = useState([]);
   const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState(false);
 
   console.log("TOKEN: ", token);
   const columns = [
@@ -125,11 +127,18 @@ function DocumentType() {
   };
 
   async function fetchDocumentType() {
-    console.log("token", token);
-    const response = await api.get("DocumentType");
-    console.log(response.data.data);
-    setDataSource(response.data.data);
-    setAllDocumentTypes(response.data.data);
+    setLoading(true);
+    try {
+      console.log("token", token);
+      const response = await api.get("DocumentType");
+      console.log(response.data.data);
+      setDataSource(response.data.data);
+      setAllDocumentTypes(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      toast.error("Danh sách trống.");
+      setLoading(false);
+    }
   }
 
   async function handleSubmit(values) {
@@ -187,6 +196,10 @@ function DocumentType() {
         style={{ width: "1200px" }}
         columns={columns}
         dataSource={dataSource}
+        loading={{
+          spinning: loading,
+          indicator: <Spin />,
+        }}
         pagination={pagination}
         onChange={handleTableChange}
       ></Table>

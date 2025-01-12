@@ -18,9 +18,9 @@ import {
 import { FaSackDollar } from "react-icons/fa6";
 import "./index.css";
 import { TruckOutlined } from "@ant-design/icons";
-import { DatePicker, Form, Spin } from "antd";
+import { DatePicker, Form, Select, Spin } from "antd";
 import api from "../../config/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment";
 
 const { RangePicker } = DatePicker;
@@ -36,8 +36,27 @@ function Report() {
     revenue: 0,
   });
   const [chartData, setChartData] = useState([]);
+  const [chartAgencyData, setChartAgencyData] = useState([]);
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
+  const [agency, setAgency] = useState(null);
+
+  const fetchagency = async () => {
+    const response = await api.get(`Agency`);
+    const data = response.data.data;
+    console.log({ data });
+
+    const list = data.map((agency) => ({
+      value: agency.id,
+      label: <span>{agency.name}</span>,
+    }));
+
+    setAgency(list);
+  };
+
+  useEffect(() => {
+    fetchagency();
+  }, []);
 
   const handleDateChange = async (value, dateString) => {
     setLoading(true);
@@ -101,32 +120,36 @@ function Report() {
     }
   };
 
-  // const renderCustomizedLabel = ({
-  //   cx,
-  //   cy,
-  //   midAngle,
-  //   innerRadius,
-  //   outerRadius,
-  //   percent,
-  //   index,
-  // }) => {
-  //   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  //   const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  //   const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const handleYearAgencyChange = async (date, dateString) => {
+    if (dateString && agency) {
+      setLoading(true);
+      try {
+        const response = await api.get(
+          `Dashboard/MonthlyRevenueByYearByAgencyId`,
+          {
+            params: {
+              yearAgency: dateString,
+              agencyId: agency,
+            },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
-  //   return (
-  //     <text
-  //       x={x}
-  //       y={y}
-  //       fill="white"
-  //       textAnchor={x > cx ? "start" : "end"}
-  //       dominantBaseline="central"
-  //     >
-  //       {`${(percent * 100).toFixed(0)}%`}
-  //     </text>
-  //   );
-  // };
-  // const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+        const formattedData = response.data.data.map((item) => ({
+          month: `Tháng ${item.month}`,
+          revenue: item.revenue || 0, // Đảm bảo giá trị là số
+        }));
+        console.log("chart", response.data.data);
+        setChartAgencyData(formattedData);
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   return (
     <Spin spinning={loading} tip="Loading...">
@@ -203,9 +226,102 @@ function Report() {
             </Form.Item>
           </Form>
           <div className="charts-report w-full">
+            <div className="revenueAll">
+              <ResponsiveContainer
+                width="100%"
+                height={400}
+                className="mx-auto"
+              >
+                <BarChart
+                  data={chartData}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 50, // Increased margin for rotated labels
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis
+                    tickFormatter={(value) =>
+                      new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(value)
+                    }
+                    tick={{ fontSize: 12, dx: -10 }} // Giảm kích thước chữ và đẩy nhãn sang trái
+                    label={{
+                      angle: -90,
+                      position: "insideLeft",
+                      dx: -20,
+                    }}
+                  />
+                  <Tooltip
+                    formatter={(value) => {
+                      const numericValue =
+                        typeof value === "number" ? value : Number(value);
+                      return new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(numericValue);
+                    }}
+                  />
+                  {/* <Tooltip
+                formatter={(value) =>
+                  new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(value)
+                }
+              /> */}
+                  {/* <Legend /> */}
+                  <Legend align="center" verticalAlign="bottom" />
+                  <Bar
+                    dataKey="revenue"
+                    fill="#8884d8"
+                    name="Doanh thu theo tháng"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="revenueagency">
+            <div
+              className="chart-title-report"
+              style={{ marginBottom: "20px" }}
+            >
+              <h3>Biểu đồ doanh thu theo tháng của agency</h3>
+            </div>
+            <div className="revenueagency_infor">
+              <Form>
+                <div
+                  style={{ display: "flex", gap: "16px", alignItems: "center" }}
+                >
+                  <Form.Item>
+                    <Form.Item>
+                      <Select
+                        placeholder="Chọn chi nhánh"
+                        options={agency}
+                        onChange={(value) => setAgency(value)}
+                      />
+                    </Form.Item>
+                    <DatePicker
+                      picker="year"
+                      onChange={handleYearAgencyChange}
+                      disabledDate={(current) => {
+                        return current && current > moment().endOf("year");
+                      }}
+                      placeholder="Chọn năm"
+                    />
+                  </Form.Item>
+                </div>
+              </Form>
+            </div>
             <ResponsiveContainer width="100%" height={400} className="mx-auto">
               <BarChart
-                data={chartData}
+                data={chartAgencyData}
                 margin={{
                   top: 5,
                   right: 30,
@@ -251,40 +367,12 @@ function Report() {
                 <Legend align="center" verticalAlign="bottom" />
                 <Bar
                   dataKey="revenue"
-                  fill="#8884d8"
-                  name="Doanh thu theo tháng"
+                  fill="#ff6d00"
+                  name="Doanh thu theo tháng của agency"
                 />
               </BarChart>
             </ResponsiveContainer>
           </div>
-
-          {/* <div className="chart-report-number">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              width={500}
-              height={300}
-              data={chartData}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="numberOfOrders"
-                stroke="#8884d8"
-                activeDot={{ r: 8 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div> */}
         </div>
       </main>
     </Spin>

@@ -31,5 +31,6 @@
 
 .content-container {
   margin-left: 250px; /* Tăng giá trị này để mở rộng không gian nội dung */
-  padding: 16px;
+  padding: 16px; 
 }
+

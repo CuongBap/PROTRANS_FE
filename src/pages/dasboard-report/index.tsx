@@ -18,10 +18,11 @@ import {
 import { FaSackDollar } from "react-icons/fa6";
 import "./index.css";
 import { TruckOutlined } from "@ant-design/icons";
-import { DatePicker, Form, Select, Spin } from "antd";
+import { Button, DatePicker, Form, Select, Spin } from "antd";
 import api from "../../config/api";
 import { useEffect, useState } from "react";
 import moment from "moment";
+import { useForm } from "antd/es/form/Form";
 
 const { RangePicker } = DatePicker;
 
@@ -35,6 +36,7 @@ function Report() {
     numberOfAccounts: 0,
     revenue: 0,
   });
+  const [formAgencyVariable] = useForm();
   const [chartData, setChartData] = useState([]);
   const [chartAgencyData, setChartAgencyData] = useState([]);
   const token = localStorage.getItem("token");
@@ -120,36 +122,122 @@ function Report() {
     }
   };
 
-  const handleYearAgencyChange = async (date, dateString) => {
-    if (dateString && agency) {
-      setLoading(true);
-      try {
-        const response = await api.get(
-          `Dashboard/MonthlyRevenueByYearByAgencyId`,
-          {
-            params: {
-              yearAgency: dateString,
-              agencyId: agency,
-            },
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+  const handleYearAgencyChange = async (values) => {
+    console.log("AgencyId", values.agencyId);
 
-        const formattedData = response.data.data.map((item) => ({
-          month: `Tháng ${item.month}`,
-          revenue: item.revenue || 0, // Đảm bảo giá trị là số
-        }));
-        console.log("chart", response.data.data);
-        setChartAgencyData(formattedData);
-      } catch (error) {
-        console.error("Error fetching chart data:", error);
-      } finally {
-        setLoading(false);
-      }
+    const { agencyId, yearAgency } = values;
+
+    if (!agencyId || !yearAgency) {
+      console.error("Please select both an agency and a year.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const year = yearAgency.format("YYYY");
+      console.log("year agency", year);
+      const response = await api.get(
+        `Dashboard/MonthlyRevenueByYearByAgencyId`,
+        {
+          params: {
+            yearAgency: year,
+            agencyId,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log("values", year);
+      console.log("agencyId", agencyId);
+
+      const formattedData = response.data.data.map((item) => ({
+        month: `Tháng ${item.month}`,
+        revenue: item.revenue || 0, // Ensure revenue is a number
+      }));
+
+      console.log("chart agency", response.data.data);
+      setChartAgencyData(formattedData);
+    } catch (error) {
+      console.error("Error fetching chart data:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // const handleYearAgencyChange = async (date, dateString) => {
+  //   const formValues = formAgencyVariable.getFieldsValue(); // Get form values
+  //   const { agencyId, yearAgency } = formValues;
+
+  //   if (!agencyId || !yearAgency) {
+  //     console.error("Please select both an agency and a year.");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //     const response = await api.get(
+  //       `Dashboard/MonthlyRevenueByYearByAgencyId`,
+  //       {
+  //         params: {
+  //           year: yearAgency.format("YYYY"), // Ensure year is in correct format
+  //           agencyId: agencyId, // Use agencyId from form
+  //         },
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+
+  //     const formattedData = response.data.data.map((item) => ({
+  //       month: `Tháng ${item.month}`,
+  //       revenue: item.revenue || 0, // Ensure revenue is a number
+  //     }));
+
+  //     console.log("chart", response.data.data);
+  //     setChartAgencyData(formattedData);
+  //   } catch (error) {
+  //     console.error("Error fetching chart data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const handleYearAgencyChange = async (date, dateString) => {
+  //   const formValues = formAgencyVariable.getFieldsValue(); // Lấy giá trị từ form
+  //   const { agencyId, yearAgency } = formValues;
+
+  //   if (dateString && agencyId) {
+  //     setLoading(true);
+  //     try {
+  //       const response = await api.get(
+  //         `Dashboard/MonthlyRevenueByYearByAgencyId`,
+  //         {
+  //           params: {
+  //             yearAgency: dateString,
+  //             agencyId: agency,
+  //           },
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           },
+  //         }
+  //       );
+
+  //       const formattedData = response.data.data.map((item) => ({
+  //         month: `Tháng ${item.month}`,
+  //         revenue: item.revenue || 0, // Đảm bảo giá trị là số
+  //       }));
+  //       console.log("chart", response.data.data);
+  //       setChartAgencyData(formattedData);
+  //       formAgencyVariable.resetFields();
+  //     } catch (error) {
+  //       console.error("Error fetching chart data:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
 
   return (
     <Spin spinning={loading} tip="Loading...">
@@ -295,29 +383,47 @@ function Report() {
               <h3>Biểu đồ doanh thu theo tháng của agency</h3>
             </div>
             <div className="revenueagency_infor">
-              <Form>
+              {/* form={formAgencyVariable} */}
+              <Form onFinish={handleYearAgencyChange}>
                 <div
                   style={{ display: "flex", gap: "16px", alignItems: "center" }}
                 >
-                  <Form.Item>
-                    <Form.Item>
-                      <Select
-                        placeholder="Chọn chi nhánh"
-                        options={agency}
-                        onChange={(value) => setAgency(value)}
-                      />
-                    </Form.Item>
+                  <Form.Item label="Chi nhánh" name={"agencyId"}>
+                    <Select
+                      options={agency}
+                      //onChange={(value) => setAgency(value)}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Năm" name="yearAgency">
                     <DatePicker
                       picker="year"
-                      onChange={handleYearAgencyChange}
+                      //onChange={handleYearAgencyChange}
                       disabledDate={(current) => {
                         return current && current > moment().endOf("year");
                       }}
                       placeholder="Chọn năm"
                     />
                   </Form.Item>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      Thông kê
+                    </Button>
+                  </Form.Item>
                 </div>
               </Form>
+              {/* <Button
+                onClick={() => {
+                  const { agencyId, yearAgency } =
+                    formAgencyVariable.getFieldsValue(); // Lấy giá trị từ form
+                  if (agencyId && yearAgency) {
+                    handleYearAgencyChange(null, yearAgency.format("YYYY"));
+                  } else {
+                    console.error("Vui lòng chọn cả chi nhánh và năm.");
+                  }
+                }}
+              >
+                Thông kê
+              </Button> */}
             </div>
             <ResponsiveContainer width="100%" height={400} className="mx-auto">
               <BarChart

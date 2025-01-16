@@ -237,7 +237,11 @@ const DashboardAdmin: React.FC = () => {
                 </Space>
               </a>
             </Dropdown>
-            <Dropdown.Button menu={menuProps} placement="bottomRight">
+            <Dropdown.Button
+              menu={menuProps}
+              placement="bottomRight"
+              onClick={() => navigate("profile")}
+            >
               <UserOutlined />
               {account.Username}
             </Dropdown.Button>

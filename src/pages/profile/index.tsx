@@ -1,4 +1,4 @@
-import { Card, Descriptions, Spin } from "antd";
+import { Button, Card, Descriptions, Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../config/api";
 import { useSelector } from "react-redux";
@@ -9,8 +9,24 @@ import { UserOutlined } from "@ant-design/icons";
 
 function Profile() {
   const [accountData, setAccountData] = useState(null);
+  const [translatorSkills, setTranslatorSkills] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(false);
   const account = useSelector((store: RootState) => store.accountmanage);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [activeCertificateUrl, setActiveCertificateUrl] = useState<
+    string | null
+  >(null);
+
+  const showCertificate = (url: string) => {
+    setActiveCertificateUrl(url);
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setActiveCertificateUrl(null);
+  };
 
   async function fetchAccount() {
     setLoading(true);
@@ -25,9 +41,40 @@ function Profile() {
     }
   }
 
+  async function fetchLanguages() {
+    try {
+      const response = await api.get(`Language`);
+      const data = response.data.data;
+      const list = data.map((language) => ({
+        id: language.id,
+        name: language.name,
+      }));
+      setLanguages(list);
+    } catch (error) {
+      console.error("Error fetching languages:", error);
+    }
+  }
+
+  const getLanguageName = (languageId) => {
+    const language = languages.find((lang) => lang.id === languageId);
+    return language ? language.name : "Unknown";
+  };
+
+  async function fetchTranslatorSkills() {
+    try {
+      const response = await api.get(`TranslatorSkill/${account.Id}`);
+      console.log(response.data.data);
+      setTranslatorSkills(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching translator skills:", error);
+    }
+  }
+
   useEffect(() => {
     if (account.Id) {
       fetchAccount();
+      fetchTranslatorSkills();
+      fetchLanguages();
     }
   }, [account.Id]);
 
@@ -117,6 +164,65 @@ function Profile() {
                 </Descriptions.Item>
               </Descriptions>
             </Card>
+
+            {/* Card chứng chỉ */}
+            {accountData?.roleName === "Translator" && (
+              <Card
+                title="Chứng chỉ"
+                bordered={true}
+                style={{
+                  width: "40%",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "8px",
+                }}
+              >
+                <ul>
+                  {translatorSkills.length > 0 ? (
+                    translatorSkills.map((skill: any) => (
+                      <li key={skill.id} style={{ marginLeft: "20px" }}>
+                        {skill.certificateUrl ? (
+                          <a
+                            onClick={() =>
+                              showCertificate(skill.certificateUrl)
+                            }
+                          >
+                            {getLanguageName(skill.languageId)}
+                          </a>
+                        ) : (
+                          "Không hợp lệ"
+                        )}
+                      </li>
+                    ))
+                  ) : (
+                    <p>Không có chứng chỉ nào.</p>
+                  )}
+                </ul>
+
+                {/* Modal hiển thị chứng chỉ */}
+                <Modal
+                  title="Chứng chỉ dịch thuật"
+                  visible={isModalVisible}
+                  onCancel={handleModalClose}
+                  footer={null}
+                  width={800}
+                  centered
+                >
+                  {activeCertificateUrl ? (
+                    <embed
+                      src={activeCertificateUrl}
+                      style={{
+                        width: "100%",
+                        height: "600px",
+                        borderRadius: "8px",
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  ) : (
+                    <p>Không có nội dung.</p>
+                  )}
+                </Modal>
+              </Card>
+            )}
           </div>
         </>
       )}

@@ -52,7 +52,7 @@ const DashboardTranslator: React.FC = () => {
   const navigate = useNavigate();
   const [listNoti, setListNoti] = useState([]);
   const [countNoti, setCountNoti] = useState(0);
-  const [breadcrumb, setBreadcrumb] = useState("Dashboard");
+  const [breadcrumb, setBreadcrumb] = useState("Tài liệu đang dịch");
 
   const handleMenuClick = ({ key }) => {
     if (key === "logout") {

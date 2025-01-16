@@ -2,10 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowRightOutlined,
   AuditOutlined,
+  BarChartOutlined,
   BellOutlined,
   BookOutlined,
   ContainerOutlined,
   DeliveredProcedureOutlined,
+  DollarOutlined,
   FileDoneOutlined,
   FontColorsOutlined,
   FormOutlined,
@@ -68,7 +70,8 @@ const items: MenuItem[] = [
     "assignhardcopy",
     <DeliveredProcedureOutlined />
   ),
-  getItem("Báo cáo thông kê", "reportmanager", <FileDoneOutlined />),
+  getItem("Quản lý giao dịch", "transaction", <DollarOutlined />),
+  getItem("Báo cáo thống kê", "reportmanager", <BarChartOutlined />),
 ];
 
 const DashboardManager: React.FC = () => {

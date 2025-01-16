@@ -43,7 +43,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
 import OrderNoShip from "./pages/orderNoShip";
 import OrderNoPick from "./pages/orderNoPick";
-import ReportManager from "./pages/dasboard-report";
+import ReportManager from "./pages/dashboard-report";
 import PaymentSuccess from "./pages/payments/paySuccess";
 import PaymentFailure from "./pages/payments/paymentFail";
 import Payment from "./pages/payment";

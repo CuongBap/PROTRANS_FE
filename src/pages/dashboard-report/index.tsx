@@ -380,7 +380,7 @@ function Report() {
               className="chart-title-report"
               style={{ marginBottom: "20px" }}
             >
-              <h3>Biểu đồ doanh thu theo tháng của agency</h3>
+              <h3>Biểu đồ doanh thu theo tháng của trung tâm</h3>
             </div>
             <div className="revenueagency_infor">
               {/* form={formAgencyVariable} */}
@@ -391,6 +391,8 @@ function Report() {
                   <Form.Item label="Chi nhánh" name={"agencyId"}>
                     <Select
                       options={agency}
+                      placeholder="Chọn chi nhánh"
+                      style={{ minWidth: "320px" }}
                       //onChange={(value) => setAgency(value)}
                     />
                   </Form.Item>
@@ -406,7 +408,7 @@ function Report() {
                   </Form.Item>
                   <Form.Item>
                     <Button type="primary" htmlType="submit">
-                      Thông kê
+                      Thống kê
                     </Button>
                   </Form.Item>
                 </div>
@@ -422,7 +424,7 @@ function Report() {
                   }
                 }}
               >
-                Thông kê
+                Thống kê
               </Button> */}
             </div>
             <ResponsiveContainer width="100%" height={400} className="mx-auto">
@@ -474,7 +476,7 @@ function Report() {
                 <Bar
                   dataKey="revenue"
                   fill="#ff6d00"
-                  name="Doanh thu theo tháng của agency"
+                  name="Doanh thu theo tháng của trung tâm"
                 />
               </BarChart>
             </ResponsiveContainer>

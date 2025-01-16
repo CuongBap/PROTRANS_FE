@@ -38,7 +38,7 @@ function getItem(
 const items: MenuItem[] = [
   getItem("Tài liệu đang dịch", "assignment", <TranslationOutlined />),
   getItem("Lịch sử", "history", <HistoryOutlined />),
-  getItem("Bằng cấp của bạn", "translatorskill", <ContainerOutlined />),
+  getItem("Chứng chỉ của bạn", "translatorskill", <ContainerOutlined />),
 ];
 
 const DashboardTranslator: React.FC = () => {
@@ -221,7 +221,11 @@ const DashboardTranslator: React.FC = () => {
               </a>
             </Dropdown>
 
-            <Dropdown.Button menu={menuProps} placement="bottomRight">
+            <Dropdown.Button
+              menu={menuProps}
+              placement="bottomRight"
+              onClick={() => navigate("profile")}
+            >
               <UserOutlined />
               {account.Username}
             </Dropdown.Button>

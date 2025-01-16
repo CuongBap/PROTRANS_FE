@@ -243,6 +243,10 @@ function App() {
           path: "transaction",
           element: <Transaction />,
         },
+        {
+          path: "profile",
+          element: <Profile />,
+        },
       ],
     },
     {
@@ -272,6 +276,10 @@ function App() {
         {
           path: "shipperaccount",
           element: <ShipperAcccount />,
+        },
+        {
+          path: "profile",
+          element: <Profile />,
         },
       ],
     },
@@ -323,6 +331,10 @@ function App() {
           path: "ordernopick",
           element: <OrderNoPick />,
         },
+        {
+          path: "profile",
+          element: <Profile />,
+        },
       ],
     },
     {
@@ -344,6 +356,10 @@ function App() {
         {
           path: "translatorskill",
           element: <ManageTranslatorSkill />,
+        },
+        {
+          path: "profile",
+          element: <Profile />,
         },
       ],
     },

@@ -38,7 +38,7 @@ function getItem(
 const items: MenuItem[] = [
   getItem("Tài liệu đang dịch", "assignment", <TranslationOutlined />),
   getItem("Lịch sử", "history", <HistoryOutlined />),
-  getItem("Bằng cấp của bạn", "translatorskill", <ContainerOutlined />),
+  getItem("Chứng chỉ của bạn", "translatorskill", <ContainerOutlined />),
 ];
 
 const DashboardTranslator: React.FC = () => {
@@ -52,7 +52,7 @@ const DashboardTranslator: React.FC = () => {
   const navigate = useNavigate();
   const [listNoti, setListNoti] = useState([]);
   const [countNoti, setCountNoti] = useState(0);
-  const [breadcrumb, setBreadcrumb] = useState("Dashboard");
+  const [breadcrumb, setBreadcrumb] = useState("Tài liệu đang dịch");
 
   const handleMenuClick = ({ key }) => {
     if (key === "logout") {
@@ -221,7 +221,11 @@ const DashboardTranslator: React.FC = () => {
               </a>
             </Dropdown>
 
-            <Dropdown.Button menu={menuProps} placement="bottomRight">
+            <Dropdown.Button
+              menu={menuProps}
+              placement="bottomRight"
+              onClick={() => navigate("profile")}
+            >
               <UserOutlined />
               {account.Username}
             </Dropdown.Button>

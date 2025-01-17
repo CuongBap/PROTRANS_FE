@@ -43,7 +43,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
 import OrderNoShip from "./pages/orderNoShip";
 import OrderNoPick from "./pages/orderNoPick";
-import ReportManager from "./pages/dasboard-report";
+import ReportManager from "./pages/dashboard-report";
 import PaymentSuccess from "./pages/payments/paySuccess";
 import PaymentFailure from "./pages/payments/paymentFail";
 import Payment from "./pages/payment";
@@ -243,6 +243,10 @@ function App() {
           path: "transaction",
           element: <Transaction />,
         },
+        {
+          path: "profile",
+          element: <Profile />,
+        },
       ],
     },
     {
@@ -272,6 +276,10 @@ function App() {
         {
           path: "shipperaccount",
           element: <ShipperAcccount />,
+        },
+        {
+          path: "profile",
+          element: <Profile />,
         },
       ],
     },
@@ -323,6 +331,10 @@ function App() {
           path: "ordernopick",
           element: <OrderNoPick />,
         },
+        {
+          path: "profile",
+          element: <Profile />,
+        },
       ],
     },
     {
@@ -344,6 +356,10 @@ function App() {
         {
           path: "translatorskill",
           element: <ManageTranslatorSkill />,
+        },
+        {
+          path: "profile",
+          element: <Profile />,
         },
       ],
     },

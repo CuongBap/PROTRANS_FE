@@ -71,12 +71,13 @@ function RequestManager() {
     }
 
     const extension = urlPath.split(".").pop().split("?")[0].toLowerCase();
+    console.log(extension);
 
     switch (extension) {
       case "pdf":
         return urlPath;
       case "docx":
-      case "xlsx":
+      case "doc":
       case "pptx":
         return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
           urlPath
@@ -656,6 +657,7 @@ function RequestManager() {
                             onCancel={closeModal}
                             footer={null}
                             width="80%"
+                            centered
                           >
                             <iframe
                               src={getIframeSrc(

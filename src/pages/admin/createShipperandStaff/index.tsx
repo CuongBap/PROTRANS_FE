@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import api from "../../../config/api";
 import { useForm } from "antd/es/form/Form";
 import { toast } from "react-toastify";
+import { PlusOutlined } from "@ant-design/icons";
 
 function ShipperAndStaff() {
   const [formVariable] = useForm();
@@ -50,9 +51,9 @@ function ShipperAndStaff() {
       const response = await api.post("Account", values);
       setDataSource(response.data.data);
       formVariable.resetFields();
-      toast.success("Tạo thành Công");
+      toast.success("Tạo tài khoản thành công!");
     } catch (error) {
-      toast.error("Assign fail");
+      toast.error("Tạo tài khoản thất bại. Vui lòng thử lại.");
     }
   };
 
@@ -84,19 +85,19 @@ function ShipperAndStaff() {
         rules={[
           {
             required: true,
-            message: "Please Input Tên người dùng",
+            message: "* vui lòng nhập",
           },
         ]}
       >
         <Input />
       </Form.Item>
       <Form.Item
-        label="Họ và Tên"
+        label="Họ và tên"
         name={"fullName"}
         rules={[
           {
             required: true,
-            message: "Please Input Họ và Tên",
+            message: "* vui lòng nhập",
           },
         ]}
       >
@@ -108,7 +109,7 @@ function ShipperAndStaff() {
         rules={[
           {
             required: true,
-            message: "Please Input Email",
+            message: "* vui lòng nhập",
           },
         ]}
       >
@@ -120,7 +121,7 @@ function ShipperAndStaff() {
         rules={[
           {
             required: true,
-            message: "Please Input Số điện thoại",
+            message: "* vui lòng nhập",
           },
         ]}
       >
@@ -132,35 +133,35 @@ function ShipperAndStaff() {
         rules={[
           {
             required: true,
-            message: "Please Input Địa chỉ",
+            message: "* vui lòng nhập",
           },
         ]}
       >
         <Input />
       </Form.Item>
       <Form.Item
-        label="Mật Khẩu"
+        label="Mật khẩu"
         name={"password"}
         rules={[
           {
             required: true,
-            message: "Please Input Mật Khẩu",
+            message: "* vui lòng nhập",
           },
         ]}
       >
         <Input.Password />
       </Form.Item>
       <Form.Item
-        label="Ngày tháng năm sinh"
+        label="Ngày sinh"
         name={"dob"}
         rules={[
           {
             required: true,
-            message: "Please Input ngày tháng năm sinh",
+            message: "* vui lòng chọn",
           },
         ]}
       >
-        <DatePicker />
+        <DatePicker placeholder="Chọn ngày" />
       </Form.Item>
       <Form.Item
         label="Giới tính"
@@ -168,20 +169,20 @@ function ShipperAndStaff() {
         rules={[
           {
             required: true,
-            message: "Please Input Giới tính",
+            message: "* vui lòng chọn",
           },
         ]}
       >
         <Select
           showSearch
-          placeholder="chọn giới tính"
+          placeholder="Chọn giới tính"
           filterOption={(input, option) =>
             (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }
           options={[
-            { value: "Male", label: "Male" },
-            { value: "Female", label: "Female" },
-            { value: "Other", label: "Other" },
+            { value: "Male", label: "Nam" },
+            { value: "Female", label: "Nữ" },
+            { value: "Other", label: "Khác" },
           ]}
         />
       </Form.Item>
@@ -191,11 +192,11 @@ function ShipperAndStaff() {
         rules={[
           {
             required: true,
-            message: "Please Input Vai trò",
+            message: "* vui lòng chọn",
           },
         ]}
       >
-        <Select options={role} />
+        <Select options={role} placeholder="Chọn vai trò" />
       </Form.Item>
       <Form.Item
         label="Chi nhánh"
@@ -203,19 +204,19 @@ function ShipperAndStaff() {
         rules={[
           {
             required: true,
-            message: "Please Input Chi nhánh",
+            message: "* vui lòng chọn",
           },
         ]}
       >
-        <Select options={agency} />
+        <Select options={agency} placeholder="Chọn chi nhánh" />
       </Form.Item>
       <Form.Item>
         <Space>
           <Button type="primary" htmlType="submit">
-            Gửi
+            Tạo
           </Button>
           <Button type="default" onClick={() => formVariable.resetFields()}>
-            hủy
+            Hủy
           </Button>
         </Space>
       </Form.Item>

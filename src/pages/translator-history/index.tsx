@@ -42,6 +42,35 @@ function History() {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const getIframeSrc = (urlPath) => {
+    if (!urlPath || typeof urlPath !== "string") {
+      return "";
+    }
+
+    const hasExtension = urlPath.includes(".");
+    if (!hasExtension) {
+      console.warn("URL không xác định định dạng.");
+      return "";
+    }
+
+    const extension = urlPath.split(".").pop().split("?")[0].toLowerCase();
+    console.log(extension);
+
+    switch (extension) {
+      case "pdf":
+        return urlPath;
+      case "docx":
+      case "doc":
+      case "pptx":
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+          urlPath
+        )}`;
+      default:
+        console.warn(`Định dạng không được hỗ trợ: ${extension}`);
+        return "";
+    }
+  };
+
   const openModal = () => {
     setIsModalVisible(true);
   };
@@ -147,7 +176,7 @@ function History() {
       key: "deadline",
       sorter: (a, b) => dayjs(a.deadline).unix() - dayjs(b.deadline).unix(),
       render: (deadline) => {
-        return dayjs(deadline).format("DD/MM/YYYY HH:mm");
+        return dayjs(deadline).format("DD/MM/YYYY");
       },
     },
     {
@@ -344,9 +373,10 @@ function History() {
                   onCancel={closeModal}
                   footer={null}
                   width="80%"
+                  centered
                 >
                   <iframe
-                    src={selectedDocument.urlPath}
+                    src={getIframeSrc(selectedDocument.urlPath)}
                     style={{
                       width: "100%",
                       height: "80vh",

@@ -24,6 +24,7 @@ import { useForm } from "antd/es/form/Form";
 import {
   CheckOutlined,
   CloseOutlined,
+  ContainerOutlined,
   LoadingOutlined,
   LockOutlined,
   MinusCircleOutlined,
@@ -52,6 +53,7 @@ function TranslatorAccount() {
   const [isOpenskill, setIsOpenSkill] = useState(false);
   const [role, setRole] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [allTranslator, setAllTranslator] = useState([]);
   const [currentTranslatorSkills, setCurrentTranslatorSkills] = useState([]);
 
@@ -178,12 +180,12 @@ function TranslatorAccount() {
       key: "id",
       render: (id, data) => (
         <Space>
-          <Button
+          <button
             style={{
               color: "white",
               backgroundColor: "orange",
               padding: 5,
-              width: 80,
+              width: 100,
               borderRadius: 8,
               borderWidth: 0,
               fontSize: 12,
@@ -195,8 +197,9 @@ function TranslatorAccount() {
               setIsOpenSkill(true);
             }}
           >
-            chi tiết
-          </Button>
+            <ContainerOutlined />
+            &nbsp; Chứng chỉ
+          </button>
           <Popconfirm
             title={`Bạn có chắc chắn muốn ${
               !data.isDeleted
@@ -253,6 +256,7 @@ function TranslatorAccount() {
   };
 
   async function handleSubmit(values) {
+    setModalLoading(true);
     console.log(values);
 
     for (let i = 0; i < values.skills.length; i++) {
@@ -271,8 +275,10 @@ function TranslatorAccount() {
       fetchTranslatorAccount();
       formVariable.resetFields();
       toast.success("Tạo thành công tài khoản cho dịch thuật viên.");
+      setModalLoading(false);
     } catch (error) {
       toast.error("Tạo thất bại. " + error.response.data.message);
+      setModalLoading(false);
     }
   }
 
@@ -337,6 +343,9 @@ function TranslatorAccount() {
         okText="Tạo tài khoản mới"
         onOk={() => {
           formVariable.submit();
+        }}
+        okButtonProps={{
+          loading: modalLoading,
         }}
       >
         <Form
@@ -497,7 +506,10 @@ function TranslatorAccount() {
                           ]}
                           label="Ngôn ngữ"
                         >
-                          <Select options={language} />
+                          <Select
+                            options={language}
+                            placeholder="Chọn ngôn ngữ"
+                          />
                         </Form.Item>
                       </Col>
                       <Col span={24}>
@@ -555,7 +567,7 @@ function TranslatorAccount() {
         onCancel={() => {
           setIsOpenSkill(false);
         }}
-        title="Ngoại ngữ của dịch thuật viên"
+        title="CHỨNG CHỈ DỊCH THUẬT VIÊN"
         footer={[
           <button
             key="cancel"
@@ -597,7 +609,7 @@ function TranslatorAccount() {
             </div>
           ))
         ) : (
-          <p>Không có kỹ năng được lưu.</p>
+          <p>Không có chứng chỉ được lưu.</p>
         )}
       </Modal>
 

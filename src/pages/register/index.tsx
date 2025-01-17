@@ -164,8 +164,8 @@ function Register() {
                   message: "* vui lòng xác nhận lại mật khẩu",
                 },
                 {
-                  min: 6,
-                  message: "* phải có ít nhất 6 ký tự",
+                  min: 8,
+                  message: "* phải có ít nhất 8 ký tự",
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {

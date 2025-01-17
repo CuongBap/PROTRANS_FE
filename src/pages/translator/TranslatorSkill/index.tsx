@@ -52,7 +52,7 @@ function ManageTranslatorSkill() {
       },
     },
     {
-      title: "Bằng cấp",
+      title: "Chứng chỉ",
       dataIndex: "certificateUrl",
       key: "certificateUrl",
       render: (certificateUrl: string) => (

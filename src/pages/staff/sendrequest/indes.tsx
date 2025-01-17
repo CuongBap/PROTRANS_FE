@@ -60,7 +60,7 @@ function SendRequest() {
 
   //-----------------------------------------------
   const fetchDocumentType = async () => {
-    const response = await api.get("DocumentType");
+    const response = await api.get("DocumentType/Existing");
     const data = response.data.data;
     console.log({ data });
 
@@ -95,7 +95,7 @@ function SendRequest() {
 
   //----------------------------------------------
   const fetchNotarizationType = async () => {
-    const response = await api.get("Notarization");
+    const response = await api.get("Notarization/Existing");
     const data = response.data.data;
     console.log({ data });
 
@@ -113,7 +113,7 @@ function SendRequest() {
 
   //----------------------------------------------
   const fetchLanguages = async () => {
-    const response = await api.get("Language");
+    const response = await api.get("Language/Existing");
     const data = response.data.data;
     console.log({ data });
 

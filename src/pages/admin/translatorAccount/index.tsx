@@ -53,6 +53,7 @@ function TranslatorAccount() {
   const [isOpenskill, setIsOpenSkill] = useState(false);
   const [role, setRole] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [allTranslator, setAllTranslator] = useState([]);
   const [currentTranslatorSkills, setCurrentTranslatorSkills] = useState([]);
 
@@ -255,6 +256,7 @@ function TranslatorAccount() {
   };
 
   async function handleSubmit(values) {
+    setModalLoading(true);
     console.log(values);
 
     for (let i = 0; i < values.skills.length; i++) {
@@ -273,8 +275,10 @@ function TranslatorAccount() {
       fetchTranslatorAccount();
       formVariable.resetFields();
       toast.success("Tạo thành công tài khoản cho dịch thuật viên.");
+      setModalLoading(false);
     } catch (error) {
       toast.error("Tạo thất bại. " + error.response.data.message);
+      setModalLoading(false);
     }
   }
 
@@ -339,6 +343,9 @@ function TranslatorAccount() {
         okText="Tạo tài khoản mới"
         onOk={() => {
           formVariable.submit();
+        }}
+        okButtonProps={{
+          loading: modalLoading,
         }}
       >
         <Form

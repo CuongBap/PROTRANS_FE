@@ -168,7 +168,7 @@ function Profile() {
             {/* Card chứng chỉ */}
             {accountData?.roleName === "Translator" && (
               <Card
-                title="Chứng chỉ"
+                title="Chứng chỉ dịch thuật"
                 bordered={true}
                 style={{
                   width: "40%",
@@ -200,7 +200,7 @@ function Profile() {
 
                 {/* Modal hiển thị chứng chỉ */}
                 <Modal
-                  title="Chứng chỉ dịch thuật"
+                  title="Chứng chỉ dịch thuật:"
                   visible={isModalVisible}
                   onCancel={handleModalClose}
                   footer={null}

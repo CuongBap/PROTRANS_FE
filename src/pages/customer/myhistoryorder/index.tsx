@@ -61,6 +61,8 @@ function HistoryOrder() {
   const [feedbackValue, setFeedbackValue] = useState("");
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isTranslatedModalVisible, setIsTranslatedModalVisible] =
+    useState(false);
 
   const openModal = () => {
     setIsModalVisible(true);
@@ -68,6 +70,72 @@ function HistoryOrder() {
 
   const closeModal = () => {
     setIsModalVisible(false);
+  };
+
+  const openTranslatedModal = () => {
+    setIsTranslatedModalVisible(true);
+  };
+
+  const closeTranslatedModal = () => {
+    setIsTranslatedModalVisible(false);
+  };
+
+  const getIframeSrc = (urlPath) => {
+    if (!urlPath || typeof urlPath !== "string") {
+      return "";
+    }
+
+    const hasExtension = urlPath.includes(".");
+    if (!hasExtension) {
+      console.warn("URL không xác định định dạng.");
+      return "";
+    }
+
+    const extension = urlPath.split(".").pop().split("?")[0].toLowerCase();
+    console.log(extension);
+
+    switch (extension) {
+      case "pdf":
+        return urlPath;
+      case "docx":
+      case "doc":
+      case "pptx":
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+          urlPath
+        )}`;
+      default:
+        console.warn(`Định dạng không được hỗ trợ: ${extension}`);
+        return "";
+    }
+  };
+
+  const getTranslatedIframeSrc = (urlPath) => {
+    if (!urlPath || typeof urlPath !== "string") {
+      return "";
+    }
+
+    const hasExtension = urlPath.includes(".");
+    if (!hasExtension) {
+      console.warn("URL không xác định định dạng.");
+      return "";
+    }
+
+    const extension = urlPath.split(".").pop().split("?")[0].toLowerCase();
+    console.log(extension);
+
+    switch (extension) {
+      case "pdf":
+        return urlPath;
+      case "docx":
+      case "doc":
+      case "pptx":
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+          urlPath
+        )}`;
+      default:
+        console.warn(`Định dạng không được hỗ trợ: ${extension}`);
+        return "";
+    }
   };
 
   // Lấy thông tin các agency
@@ -573,13 +641,16 @@ function HistoryOrder() {
                           onCancel={closeModal}
                           footer={null}
                           width="80%"
+                          centered
                         >
                           <iframe
-                            src={formUpdate.getFieldValue([
-                              "documents",
-                              name,
-                              "urlPath",
-                            ])}
+                            src={getIframeSrc(
+                              formUpdate.getFieldValue([
+                                "documents",
+                                name,
+                                "urlPath",
+                              ])
+                            )}
                             style={{
                               width: "100%",
                               height: "80vh",
@@ -607,7 +678,7 @@ function HistoryOrder() {
                                 href="#"
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  openModal();
+                                  openTranslatedModal();
                                 }}
                               >
                                 <CopyOutlined
@@ -617,17 +688,20 @@ function HistoryOrder() {
                             </span>
                             <Modal
                               closable={false}
-                              visible={isModalVisible}
-                              onCancel={closeModal}
+                              visible={isTranslatedModalVisible}
+                              onCancel={closeTranslatedModal}
                               footer={null}
                               width="80%"
+                              centered
                             >
                               <iframe
-                                src={formUpdate.getFieldValue([
-                                  "documents",
-                                  name,
-                                  "translatedUrlPath",
-                                ])}
+                                src={getIframeSrc(
+                                  formUpdate.getFieldValue([
+                                    "documents",
+                                    name,
+                                    "translatedUrlPath",
+                                  ])
+                                )}
                                 style={{
                                   width: "100%",
                                   height: "80vh",

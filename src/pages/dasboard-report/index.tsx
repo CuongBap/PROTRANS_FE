@@ -36,7 +36,6 @@ function Report() {
     numberOfAccounts: 0,
     revenue: 0,
   });
-  const [formAgencyVariable] = useForm();
   const [chartData, setChartData] = useState([]);
   const [chartAgencyData, setChartAgencyData] = useState([]);
   const token = localStorage.getItem("token");

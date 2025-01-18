@@ -378,7 +378,12 @@ function AssignNotarization() {
               },
             ]}
           >
-            <DatePicker placeholder="Chọn ngày" />
+            <DatePicker
+              placeholder="Chọn ngày"
+              disabledDate={(current) => {
+                return current && current.isBefore(dayjs(), "day");
+              }}
+            />
           </Form.Item>
         </Form>
       </Modal>

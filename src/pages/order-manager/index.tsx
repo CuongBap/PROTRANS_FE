@@ -176,7 +176,7 @@ function Order() {
           case "Completed":
             return (
               <div className="status-completed">
-                <FormOutlined />
+                <LikeOutlined />
                 &nbsp; Đã hoàn thành
               </div>
             );
@@ -197,14 +197,14 @@ function Order() {
           case "Implementing":
             return (
               <div className="status-implementing">
-                <CheckOutlined />
+                <FormOutlined />
                 &nbsp; Đang thực hiện
               </div>
             );
           case "Canceled":
             return (
               <div className="status-canceled">
-                <PauseOutlined />
+                <CloseOutlined />
                 &nbsp; Đã hủy
               </div>
             );

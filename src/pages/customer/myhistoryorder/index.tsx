@@ -296,7 +296,7 @@ function HistoryOrder() {
       title: "Thời hạn",
       dataIndex: "deadline",
       key: "deadline",
-      render: (deadline) => dayjs(deadline).format("DD/MM/YYYY HH:mm"),
+      render: (deadline) => dayjs(deadline).format("DD/MM/YYYY"),
     },
     {
       title: "Tổng giá (VNĐ)",

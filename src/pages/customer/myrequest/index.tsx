@@ -201,7 +201,7 @@ function MyRequest() {
       dataIndex: "deadline",
       key: "deadline",
       render: (deadline) => {
-        return dayjs(deadline).format("DD/MM/YYYY HH:mm");
+        return dayjs(deadline).format("DD/MM/YYYY");
       },
     },
     {

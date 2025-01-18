@@ -304,14 +304,14 @@ function Translator() {
         formVariable.resetFields();
         setIsOpen(false);
         fetchAssignment();
-        toast.success("Hoàn tất việc dịch thuật");
+        toast.success("Đã hoàn tất việc dịch tài liệu.");
       } catch (error) {
-        console.error("Cập nhập file thất bại", error);
-        toast.error("Cập nhập file thất bại.");
+        console.error("Cập nhật file thất bại.", error);
+        toast.error("Cập nhật file thất bại.");
       }
     } else {
       console.warn("No file provided for upload.");
-      toast.error("Vui lòng cung cấp file.");
+      toast.error("Vui lòng cung cấp file để hoàn tất việc dịch tài liệu.");
     }
   }
 

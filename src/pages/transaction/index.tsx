@@ -12,14 +12,19 @@ import {
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import api from "../../config/api";
+import { useNavigate } from "react-router-dom";
 import {
+  BarsOutlined,
+  BorderOutlined,
   EditOutlined,
   EyeInvisibleOutlined,
   EyeOutlined,
+  InfoCircleOutlined,
   PlusOutlined,
   StopOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { SortOrder } from "antd/es/table/interface";
 
 function Transaction() {
   const [formVariable] = useForm();
@@ -28,6 +33,7 @@ function Transaction() {
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -50,22 +56,68 @@ function Transaction() {
       dataIndex: "phoneNumber",
       key: "phoneNumber",
     },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-    },
+    // {
+    //   title: "Địa chỉ",
+    //   dataIndex: "address",
+    //   key: "address",
+    // },
     {
       title: "Mã đơn hàng",
       dataIndex: "orderCode",
       key: "orderCode",
     },
     {
-      title: "Tổng giá (VNĐ)",
+      title: (
+        <span>
+          <Tooltip title="Đây là tổng giá trị của đơn hàng mà khách hàng đã thanh toán.">
+            <InfoCircleOutlined
+              style={{
+                marginRight: 5,
+                color: "#219136",
+                cursor: "pointer",
+              }}
+            />
+          </Tooltip>
+          Tổng giá (VNĐ)
+        </span>
+      ),
       dataIndex: "totalPrice",
       key: "totalPrice",
       render: (text) => {
-        return text !== null ? text.toLocaleString("vi-VN") : text;
+        return text !== null ? (
+          <span style={{ color: "#219136" }}>
+            {text.toLocaleString("vi-VN")}
+          </span>
+        ) : (
+          text
+        );
+      },
+    },
+    {
+      title: (
+        <span>
+          <Tooltip title="Đây là phí công chứng mà trung tâm đã trả cho đơn vị công chứng.">
+            <InfoCircleOutlined
+              style={{
+                marginRight: 5,
+                color: "#e84354",
+                cursor: "pointer",
+              }}
+            />
+          </Tooltip>
+          Phí công chứng (VNĐ)
+        </span>
+      ),
+      dataIndex: "totalNotarizationFee",
+      key: "totalNotarizationFee",
+      render: (text) => {
+        return text !== null && text !== 0 ? (
+          <span style={{ color: "#e84354" }}>
+            {text.toLocaleString("vi-VN")}
+          </span>
+        ) : (
+          text
+        );
       },
     },
     {
@@ -77,71 +129,46 @@ function Transaction() {
       title: "Thời gian thanh toán",
       dataIndex: "modifiedDate",
       key: "modifiedDate",
+      sorter: (a, b) => {
+        const timeA = a.modifiedDate ? dayjs(a.modifiedDate).unix() : 0;
+        const timeB = b.modifiedDate ? dayjs(b.modifiedDate).unix() : 0;
+        return timeA - timeB;
+      },
+      defaultSortOrder: "descend" as SortOrder,
       render: (modifiedDate) => {
-        return dayjs(modifiedDate).format("HH:mm DD/MM/YYYY");
+        return modifiedDate
+          ? dayjs(modifiedDate).format("HH:mm DD/MM/YYYY")
+          : "N/A";
       },
     },
-    // {
-    //   title: "Tác vụ",
-    //   dataIndex: "id",
-    //   key: "id",
-    //   render: (id, data) => (
-    //     <Space>
-    //       <Popconfirm
-    //         title="Delete Category"
-    //         description="Are you sure to delete this language?"
-    //         onConfirm={() => handleDeleteLanguage(id)}
-    //         okText="Yes"
-    //         cancelText="No"
-    //       >
-    //         <Tooltip title="Vô hiệu hóa">
-    //           <button
-    //             style={{
-    //               color: "white",
-    //               backgroundColor: data.isDeleted ? "#23d783" : "#e03955",
-    //               padding: 5,
-    //               borderRadius: 8,
-    //               borderWidth: 0,
-    //               fontSize: 12,
-    //               textAlign: "center",
-    //               cursor: "pointer",
-    //             }}
-    //           >
-    //             {data.isDeleted ? (
-    //               <div>
-    //                 <EyeOutlined style={{ fontSize: "18px" }} />
-    //               </div>
-    //             ) : (
-    //               <div>
-    //                 <EyeInvisibleOutlined style={{ fontSize: "18px" }} />
-    //               </div>
-    //             )}
-    //           </button>
-    //         </Tooltip>
-    //       </Popconfirm>
-    //       <Tooltip title="Cập nhật">
-    //         <button
-    //           style={{
-    //             color: "white",
-    //             backgroundColor: "orange",
-    //             padding: 5,
-    //             borderRadius: 8,
-    //             borderWidth: 0,
-    //             fontSize: 12,
-    //             textAlign: "center",
-    //             cursor: "pointer",
-    //           }}
-    //           onClick={() => {
-    //             setVisibleEditModal(true);
-    //             formVariable.setFieldsValue(data);
-    //           }}
-    //         >
-    //           <EditOutlined style={{ fontSize: "18px" }} />
-    //         </button>
-    //       </Tooltip>
-    //     </Space>
-    //   ),
-    // },
+    {
+      title: "Tác vụ",
+      dataIndex: "orderId",
+      key: "orderId",
+      render: (orderId) => (
+        <div>
+          <Tooltip title="Chi tiết">
+            <button
+              style={{
+                color: "white",
+                backgroundColor: "orange",
+                padding: 5,
+                borderRadius: 8,
+                borderWidth: 0,
+                fontSize: 12,
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={() =>
+                navigate(`/dashboardmanager/order/details/${orderId}`)
+              }
+            >
+              <BarsOutlined style={{ fontSize: "18px", fontWeight: "bold" }} />
+            </button>
+          </Tooltip>
+        </div>
+      ),
+    },
   ];
 
   const [pagination, setPagination] = useState({
@@ -224,6 +251,38 @@ function Transaction() {
           indicator: <Spin />,
         }}
       ></Table>
+      <span>
+        <em>
+          <Button
+            style={{
+              background: "#219136",
+              border: "none",
+              width: "10px",
+              height: "10px",
+              padding: 0,
+              borderRadius: "50%",
+            }}
+          />
+          &nbsp; : tổng giá trị của đơn hàng mà khách hàng đã thanh toán.
+        </em>
+      </span>
+      <br />
+      <br />
+      <span>
+        <em>
+          <Button
+            style={{
+              background: "#e84354",
+              border: "none",
+              width: "10px",
+              height: "10px",
+              padding: 0,
+              borderRadius: "50%",
+            }}
+          />
+          &nbsp; : phí công chứng mà trung tâm đã trả cho đơn vị công chứng.
+        </em>
+      </span>
       <Modal
         open={isOpen}
         title="Thêm"

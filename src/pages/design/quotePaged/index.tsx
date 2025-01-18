@@ -30,7 +30,7 @@ function QuotePageDesign() {
 
   async function fetchQuotePrice() {
     setLoading(true);
-    const response = await api.get("QuotePrice");
+    const response = await api.get("QuotePrice/Existing");
     const data = response.data.data;
     const sortedData = data.sort((a, b) => {
       const langA = language.find((lang) => lang.value === a.firstLanguageId);

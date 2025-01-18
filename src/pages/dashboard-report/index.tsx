@@ -23,6 +23,7 @@ import api from "../../config/api";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { useForm } from "antd/es/form/Form";
+import { toast } from "react-toastify";
 
 const { RangePicker } = DatePicker;
 
@@ -106,8 +107,15 @@ function Report() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+        const data = response.data.data;
 
-        const formattedData = response.data.data.map((item) => ({
+        if (!data || data.length === 0) {
+          toast.warning("Chưa có doanh thu cho năm đã chọn!");
+          setChartData([]); // Đặt dữ liệu biểu đồ thành rỗng
+          return;
+        }
+
+        const formattedData = data.map((item) => ({
           month: `Tháng ${item.month}`,
           revenue: item.revenue || 0, // Đảm bảo giá trị là số
         }));
@@ -155,7 +163,15 @@ function Report() {
       console.log("values", year);
       console.log("agencyId", agencyId);
 
-      const formattedData = response.data.data.map((item) => ({
+      const data = response.data.data;
+
+      if (!data || data.length === 0) {
+        toast.warning("Chưa có doanh thu cho đại lý và năm đã chọn!");
+        setChartAgencyData([]); // Đặt dữ liệu biểu đồ thành rỗng
+        return;
+      }
+
+      const formattedData = data.map((item) => ({
         month: `Tháng ${item.month}`,
         revenue: item.revenue || 0, // Ensure revenue is a number
       }));

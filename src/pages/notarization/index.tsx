@@ -72,13 +72,16 @@ function Notarization() {
       render: (id, data) => (
         <Space>
           <Popconfirm
-            title="Delete Category"
-            description="Are you sure to delete this language?"
-            onConfirm={() => handleDeleteLanguage(id)}
-            okText="Yes"
-            cancelText="No"
+            title={`Bạn có chắc chắn muốn ${
+              !data.isDeleted
+                ? `ẩn ${data.name}?`
+                : `hiển thị lại ${data.name}?`
+            }`}
+            onConfirm={() => handleDelete(id)}
+            okText="Đồng ý"
+            cancelText="Hủy"
           >
-            <Tooltip title="Vô hiệu hóa">
+            <Tooltip title={!data.isDeleted ? "Ẩn" : "Hiển thị lại"}>
               <button
                 style={{
                   color: "white",
@@ -103,7 +106,7 @@ function Notarization() {
               </button>
             </Tooltip>
           </Popconfirm>
-          <Tooltip title="Cập nhật">
+          {/* <Tooltip title="Cập nhật">
             <button
               style={{
                 color: "white",
@@ -122,7 +125,7 @@ function Notarization() {
             >
               <EditOutlined style={{ fontSize: "18px" }} />
             </button>
-          </Tooltip>
+          </Tooltip> */}
         </Space>
       ),
     },
@@ -166,22 +169,18 @@ function Notarization() {
       setDataSource([...dataSource, values]);
       formVariable.resetFields();
       handleHideModal();
+      toast.success("Thêm mới loại công chứng thành công.");
     } catch (error) {
       toast.error("Thêm mới loại công chứng thất bại.");
       setLoading(false);
     }
   }
 
-  const handleDeleteLanguage = async (id) => {
+  const handleDelete = async (id) => {
     console.log(id);
-
     await api.delete(`Notarization/${id}`);
-
-    const listAfterDelete = dataSource.filter(
-      (notarization) => notarization.id != id
-    );
-
-    setDataSource(listAfterDelete);
+    toast.info("Cập nhật thành công.");
+    fetchNotarization();
   };
 
   function handleShowModal() {

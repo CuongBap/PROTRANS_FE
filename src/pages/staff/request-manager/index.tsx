@@ -259,7 +259,7 @@ function RequestManager() {
             return (
               <div className="status-quoted">
                 <FormOutlined />
-                &nbsp; Đã báo giá
+                &nbsp; Đã gửi giá
               </div>
             );
           case "Refuse":
@@ -408,10 +408,10 @@ function RequestManager() {
       }
       fetchRequest();
       formUpdate.resetFields();
-      toast.success("Gửi báo giá thành công.");
+      toast.success("Gửi thông tin giá thành công.");
       setIsOpen(false);
     } catch (error) {
-      toast.error("Gửi báo giá thất bại.");
+      toast.error("Gửi thông tin giá thất bại.");
     }
   }
 
@@ -453,7 +453,7 @@ function RequestManager() {
           onClick={() => handleStatusFilter("Quoted")}
         >
           <FormOutlined />
-          Đã báo giá
+          Đã gửi giá
         </Button>
         <Button
           className={`filter-button ${
@@ -503,7 +503,7 @@ function RequestManager() {
         onOk={() => {
           formUpdate.submit();
         }}
-        okText="Gửi báo giá"
+        okText="Gửi giá"
         cancelText="Đóng"
       >
         <Form form={formUpdate} onFinish={handleEditRequest}>

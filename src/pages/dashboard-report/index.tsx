@@ -17,7 +17,7 @@ import {
 } from "recharts";
 import { FaSackDollar } from "react-icons/fa6";
 import "./index.css";
-import { TruckOutlined } from "@ant-design/icons";
+import { DollarOutlined, TruckOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Select, Spin } from "antd";
 import api from "../../config/api";
 import { useEffect, useState } from "react";
@@ -130,7 +130,8 @@ function Report() {
   };
 
   useEffect(() => {
-    handleYearChange(null, "2025");
+    const currentYear = moment().format("YYYY");
+    handleYearChange(null, currentYear);
   }, []);
 
   const handleYearAgencyChange = async (values) => {
@@ -305,7 +306,8 @@ function Report() {
           </div>
           <div className="card-report">
             <div className="card-inner-report">
-              <TruckOutlined className="card_icon-report" />
+              {/* <TruckOutlined className="card_icon-report" /> */}
+              <DollarOutlined className="card_icon-report" />
               <h3>Tổng doanh thu</h3>
               <h1>
                 {new Intl.NumberFormat("vi-VN", {
@@ -328,7 +330,7 @@ function Report() {
                 disabledDate={(current) => {
                   return current && current > moment().endOf("year");
                 }}
-                defaultValue={moment("2025", "YYYY")}
+                defaultValue={moment()}
                 placeholder="Chọn năm"
               />
             </Form.Item>
@@ -466,7 +468,7 @@ function Report() {
                       currency: "VND",
                     }).format(value)
                   }
-                  tick={{ fontSize: 12, dx: -10 }} // Giảm kích thước chữ và đẩy nhãn sang trái
+                  tick={{ fontSize: 12, dx: -10 }}
                   label={{
                     angle: -90,
                     position: "insideLeft",

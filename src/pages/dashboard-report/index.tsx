@@ -167,7 +167,7 @@ function Report() {
       const data = response.data.data;
 
       if (!data || data.length === 0) {
-        toast.warning("Chưa có doanh thu cho đại lý và năm đã chọn!");
+        toast.warning("Chưa có doanh thu cho chi nhánh vào năm đã chọn!");
         setChartAgencyData([]); // Đặt dữ liệu biểu đồ thành rỗng
         return;
       }

@@ -130,7 +130,16 @@ const DashboardTranslator: React.FC = () => {
               handleReadNotification(item.id);
             }}
           >
-            {item.message} - {item.isChecked ? "Đã đọc" : "Chưa đọc"}
+            {item.message} -{" "}
+            <span
+              style={{
+                color: item.isChecked ? "green" : "red",
+              }}
+            >
+              {/* {item.message} -  */}
+              {item.isChecked ? "Đã đọc" : "Chưa đọc"}
+            </span>
+            {/* {item.message} - {item.isChecked ? "Đã đọc" : "Chưa đọc"} */}
           </a>
         ),
         key: item.id.toString(),

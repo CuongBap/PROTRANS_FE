@@ -302,6 +302,7 @@ function Translator() {
 
         console.log("API Response:", response);
         formVariable.resetFields();
+        setIsOpen(false);
         fetchAssignment();
         toast.success("Hoàn tất việc dịch thuật");
       } catch (error) {
@@ -483,13 +484,16 @@ function Translator() {
       <Modal
         open={isOpen}
         onCancel={() => {
+          formVariable.resetFields();
           setIsOpen(false);
         }}
         onOk={() => {
           formVariable.submit();
-          setIsOpen(false);
+          // setIsOpen(false);
         }}
         title="Gửi tệp đã dịch"
+        okText="Xác nhận"
+        cancelText="Hủy"
       >
         <Form
           form={formVariable}

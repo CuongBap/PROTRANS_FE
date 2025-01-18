@@ -257,7 +257,7 @@ function MyRequest() {
             return (
               <div className="status-quoted">
                 <FormOutlined />
-                &nbsp; Đã báo giá
+                &nbsp; Đã nhận giá
               </div>
             );
           case "Refuse":
@@ -378,7 +378,7 @@ function MyRequest() {
       fetchMyRequest();
       if (status === "Accept") {
         toast.success(
-          "Bạn đã chấp nhận báo giá. Đơn hàng sẽ được tạo trong thời gian sớm nhất!"
+          "Bạn đã chấp thuận thành công. Đơn hàng sẽ được tạo trong thời gian sớm nhất!"
         );
       } else if (status === "Refuse") {
         toast.info(
@@ -433,7 +433,7 @@ function MyRequest() {
           onClick={() => handleStatusFilter("Quoted")}
         >
           <FormOutlined />
-          Đã báo giá
+          Đã nhận giá
         </Button>
         <Button
           className={`filter-button ${

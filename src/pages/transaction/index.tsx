@@ -4,6 +4,7 @@ import {
   Input,
   Modal,
   Popconfirm,
+  Select,
   Space,
   Spin,
   Table,
@@ -32,6 +33,9 @@ function Transaction() {
   const [isOpen, setIsOpen] = useState(false);
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [agencyList, setAgencyList] = useState([]);
+  const [selectedAgency, setSelectedAgency] = useState("all");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -185,8 +189,25 @@ function Transaction() {
     const response = await api.get("Transaction");
     console.log(response.data.data);
     setDataSource(response.data.data);
+    setFilteredData(response.data.data);
     setLoading(false);
   }
+
+  async function fetchAgency() {
+    const response = await api.get("Agency");
+    const agencies = response.data.data;
+    setAgencyList(agencies);
+  }
+
+  const handleAgencyChange = (value) => {
+    setSelectedAgency(value);
+    if (value === "all") {
+      setFilteredData(dataSource);
+    } else {
+      const filtered = dataSource.filter((item) => item.agencyName === value);
+      setFilteredData(filtered);
+    }
+  };
 
   async function handleSubmit(values) {
     console.log(values);
@@ -237,13 +258,28 @@ function Transaction() {
 
   useEffect(() => {
     fetchTransaction();
+    fetchAgency();
   }, []);
 
   return (
     <div>
+      <Space style={{ marginBottom: 16 }}>
+        <Select
+          defaultValue="all"
+          onChange={handleAgencyChange}
+          style={{ width: 280 }}
+        >
+          <Select.Option value="all">Tất cả trung tâm</Select.Option>
+          {agencyList.map((agency) => (
+            <Select.Option key={agency.id} value={agency.name}>
+              {agency.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Space>
       <Table
         columns={columns}
-        dataSource={dataSource}
+        dataSource={filteredData}
         pagination={pagination}
         onChange={handleTableChange}
         loading={{

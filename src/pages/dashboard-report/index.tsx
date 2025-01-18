@@ -121,6 +121,10 @@ function Report() {
     }
   };
 
+  useEffect(() => {
+    handleYearChange(null, "2025");
+  }, []);
+
   const handleYearAgencyChange = async (values) => {
     console.log("AgencyId", values.agencyId);
 
@@ -308,6 +312,7 @@ function Report() {
                 disabledDate={(current) => {
                   return current && current > moment().endOf("year");
                 }}
+                defaultValue={moment("2025", "YYYY")}
                 placeholder="Chọn năm"
               />
             </Form.Item>
